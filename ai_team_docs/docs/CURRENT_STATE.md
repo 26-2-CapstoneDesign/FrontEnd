@@ -21,5 +21,6 @@ missing_reasons:
 active_tasks:
   - {task_id: TASK-DOC-002, kind: DOCS, actor_id: codex, work_status: IN_REVIEW, review_status: PENDING, required_files: [README_AI.md, docs/DECISIONS.md], latest_worklog: docs/worklogs/TASK-DOC-002__codex__20260920T070034Z.md, next_action: 사용자 검토 후 실제 프로젝트의 승인된 정보만 등록한다.}
   - {task_id: TASK-DOC-003, kind: DOCS, actor_id: codex, work_status: IN_REVIEW, review_status: PENDING, required_files: [docs/DECISIONS.md, AI_COLLABORATION_DESIGN.md], latest_worklog: docs/worklogs/TASK-DOC-003__codex__20260920T082615Z.md, next_action: 한국어 기록 형식과 포트폴리오 내용을 사용자 검토 후 활용한다.}
-updated_at: '2026-09-20T08:35:42Z'
+  - {task_id: login-feature-001, kind: FEATURE, feature_id: LOGIN, actor_id: jb, work_status: BLOCKED, review_status: PENDING, required_files: [docs/features/LOGIN.md], latest_worklog: docs/worklogs/login-feature-001__jb__20260930T121505Z.md, next_action: 로그인 UI는 UI 코드 구현 완료·브라우저 검증 대기(IMPLEMENTING)이며 사용자가 브라우저에서 직접 확인한다. 로그인 API 연동은 API·인증 방식이 정해지기 전까지 착수하지 않는다(NOT_STARTED).}
+updated_at: '2026-09-30T12:51:25Z'
 ```
