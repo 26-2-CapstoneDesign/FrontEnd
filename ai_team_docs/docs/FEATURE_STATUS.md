@@ -11,7 +11,27 @@ schema_version: 3.1.0
 template: false
 record_type: feature_index
 inventory_status: UNVERIFIED
-features: []
+features:
+- feature_id: LOGIN
+  name: 로그인
+  summary_ko: '로그인 UI: UI 코드 구현 완료, 브라우저 검증 대기(IMPLEMENTING). 로그인 API 연동: API·인증 방식 미정으로 미착수(NOT_STARTED). 로그인 기능 전체는 완료가 아니다.'
+  human_owner: null
+  actor_id: jb
+  implementation_status: IMPLEMENTING
+  work_status: BLOCKED
+  acceptance_passed: 5
+  acceptance_total: 13
+  verification_status: PARTIAL
+  review_status: PENDING
+  integration_status: NOT_MERGED
+  deployment_status: NOT_DEPLOYED
+  feature_file: docs/features/LOGIN.md
+  latest_worklog: docs/worklogs/login-feature-001__jb__20260930T121505Z.md
+  source_revision: f7ebd19a9ac4c291ce3897bb4306f8206b83f47c
+  updated_at: '2026-09-30T12:51:19Z'
+  missing_reasons:
+    human_owner: 프로젝트 담당자로 등록된 사람 ID가 없음.
+    acceptance_total: 로그인 UI 기준 13개만 포함. 로그인 API 연동의 완료 기준은 UNDECIDED.
 ```
 새 항목: 아래 필드를 feature_file에서 복사한다. 기억에 의존해 실제 상태를 다시 만들어 넣지 않는다.
 ```yaml
