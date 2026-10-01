@@ -6,7 +6,7 @@
 schema_version: 3.1.0
 template: false
 record_type: session
-summary_ko: 회원가입 화면에서 이메일 형식 검사를 입력 중이 아닌 "인증번호 발송" 버튼 클릭 시점으로 바꿨고, 사용자 결정(06:30Z)에 따라 이메일이 비어 있으면 버튼을 비활성·연한 색으로, 입력하면 진한 색으로 표시한다. 브라우저에서 abc·abc@gmail 클릭 시 오류 문구, abc@gmail.com 클릭 시 서버 미연결 안내, 버튼의 비활성·활성·비활성 복귀를 확인했고, 사용자가 실제 키보드 Backspace 삭제 시 비활성 복귀를 확인했다. 사람 승인에 따라 E007·E008 원문 YAML 오류를 고쳤다(E017). 실제 이메일 인증 API는 구현하지 않았고, 작업 완료 기준의 사람 승인이 남아 구현 상태는 IMPLEMENTING, 작업 상태는 WAITING_APPROVAL이다. 구현 내용은 docs/features/SIGNUP.md에 반영했다.
+summary_ko: 회원가입 화면에서 이메일 형식 검사를 입력 중이 아닌 "인증번호 발송" 버튼 클릭 시점으로 바꿨고, 사용자 결정(06:30Z)에 따라 이메일이 비어 있으면 버튼을 비활성·연한 색으로, 입력하면 진한 색으로 표시한다. 브라우저에서 abc·abc@gmail 클릭 시 오류 문구, abc@gmail.com 클릭 시 서버 미연결 안내, 버튼의 비활성·활성·비활성 복귀를 확인했고, 사용자가 실제 키보드 Backspace 삭제 시 비활성 복귀를 확인했다. 사람 승인에 따라 E007·E008 원문 YAML 오류를 고쳤다(E017). 실제 이메일 인증 API는 구현하지 않았고, 작업 완료 기준의 사람 승인이 남아 구현 상태는 IMPLEMENTING, 작업 상태는 WAITING_APPROVAL이다. 코드 변경은 커밋 ff75c55로 origin/jb에 push되어 integration_status는 BRANCH_ONLY다(develop 미병합, E018). 구현 내용은 docs/features/SIGNUP.md에 반영했다.
 task_id: signup-email-validation-001
 session_id: 20261001T055853Z
 kind: FEATURE
@@ -16,7 +16,7 @@ actor_id: jb
 tool: Cursor Agent
 actual_model: null
 started_at: '2026-10-01T05:19Z'
-recorded_at: '2026-10-01T07:16:43Z'
+recorded_at: '2026-10-01T07:26:13Z'
 timezone: UTC
 source_revision: 95bf65f6a2ccf79a2cb9cc3a59a8a2b546d4a0c8
 existing_edits:
@@ -46,13 +46,15 @@ approval_refs:
 - 'EXPLICIT_REQUEST@2026-10-01T06:30Z: 현재 대화의 사용자 요청과 답변 - 인증번호 발송 버튼 빈칸이면 비활성 색상·클릭 불가, 입력 시 진한 색상'
 - 'EXPLICIT_REQUEST@2026-10-01T06:40Z: 현재 대화의 사용자 요청 - AI_RULES 기준 최종 정리, commit·push 금지'
 - 'EXPLICIT_REQUEST@2026-10-01T07:14Z: 현재 대화의 사용자 요청 - 실제 키보드 검증 완료 보고, E007·E008 원문 YAML 오류 수정 승인, commit·push 금지'
+- 'EXPLICIT_REQUEST@2026-10-01T07:22Z: 현재 대화의 사용자 요청 - jb 브랜치 변경 stage·commit·push'
+- 'EXPLICIT_REQUEST@2026-10-01T07:24Z: 현재 대화의 사용자 요청 - push 이후 integration_status 문서 갱신(NOT_MERGED → BRANCH_ONLY), 검증 후 커밋·push'
 implementation_status: IMPLEMENTING
 work_status: WAITING_APPROVAL
 verification_status: PARTIAL
 review_status: PENDING
-integration_status: NOT_MERGED
+integration_status: BRANCH_ONLY
 deployment_status: NOT_DEPLOYED
-latest_event_id: E017
+latest_event_id: E018
 previous_log: docs/worklogs/signup-feature-001__jb__20261001T045008Z.md
 remaining_work:
 - 작업 완료 기준 목록(EMAIL-AC-01~12, E010·E013)의 사람 승인
@@ -1309,5 +1311,59 @@ correction:
   evidence_refs: ['E017 checks', 'E009 checks(수정 전 파싱 실패 blocks=9 ok=7)']
   impact: 'E007·E008의 내용 의미는 바뀌지 않았고 기계 판독이 가능해졌다. 상태 값·완료 기준에는 영향이 없다.'
   affected_paths: [ai_team_docs/docs/worklogs/signup-email-validation-001__jb__20261001T055853Z.md]
+missing_reasons: {}
+```
+
+## E018 — push 후 integration_status 갱신
+
+```yaml
+template: false
+record_type: event
+event_id: E018
+event_type: CHECKPOINT
+summary_ko: jb 브랜치에 커밋 및 origin/jb push 완료 후 integration_status를 BRANCH_ONLY로 갱신했다. 이 작업의 코드 변경(SignUp.jsx 이메일 형식 검증·인증번호 발송 버튼)은 커밋 ff75c55에 포함되어 origin/jb에 있고, develop에는 병합되지 않았다. 완료 기준 승인 대기와 다른 상태 값은 바꾸지 않았다.
+actor_id: jb
+recorded_at: '2026-10-01T07:25:51Z'
+occurred_at: '2026-10-01T07:25:45Z'
+source_revision: ff75c557a4c0c7f8c8de574ad819e654b00bb124
+rule_refs:
+- rule_id: C04
+  rule_text: MUST NOT invent features, stacks, API fields, approvals, worker identities, timestamps or successful results.
+  source_path: ai_team_docs/AI_RULES.md
+approval_refs:
+- 'EXPLICIT_REQUEST@2026-10-01T07:24Z: 현재 대화의 사용자 요청 - push 이후 integration_status 문서 갱신(NOT_MERGED → BRANCH_ONLY), SIGNUP 관련 worklog에 기록'
+actions:
+- 'session integration_status NOT_MERGED → BRANCH_ONLY.'
+- 'SIGNUP.md·FEATURE_STATUS.md 반영과 확인 근거는 signup-feature-001 E020·E021에 있다.'
+changes:
+- path: ai_team_docs/docs/worklogs/signup-email-validation-001__jb__20261001T055853Z.md
+  symbol: session.integration_status / E018
+  operation: MODIFY
+  reason: push 완료 사실 반영
+checks:
+- command: git rev-parse HEAD origin/jb + git merge-base --is-ancestor ff75c55 origin/develop + GitHub API 열린 PR 조회
+  environment: 로컬 저장소·GitHub REST API(2026-10-01T07:24:56Z)
+  input: jb, origin/jb, origin/develop
+  expected: HEAD와 origin/jb 동일, develop 미포함, 열린 PR 없음
+  observed: 'HEAD = origin/jb = ff75c557a4c0c7f8c8de574ad819e654b00bb124, IN_DEVELOP_EXIT=1, OPEN_PRS=0'
+  result: PASSED
+  evidence_ref: docs/worklogs/signup-feature-001__jb__20261001T045008Z.md#E020
+unperformed_checks: []
+state_before:
+  work_status: WAITING_APPROVAL
+  integration_status: NOT_MERGED
+state_after:
+  work_status: WAITING_APPROVAL
+  implementation_status: IMPLEMENTING
+  integration_status: BRANCH_ONLY
+remaining_work:
+- 작업 완료 기준 목록(EMAIL-AC-01~12) 사람 승인
+- 사람 검토
+- 이메일 중복 검사·인증번호 발송 API 연동(UNDECIDED)
+next_action: 사용자에게 보고한다. 확인 전에는 추가 작업을 하지 않는다.
+state_updates:
+- path: ai_team_docs/docs/features/SIGNUP.md
+  result: NOT_APPLICABLE
+  evidence_ref: signup-feature-001 E021에서 반영·확인(sha256 2af219b98adfe6b490640981e3467b43524e4fbc0f3346313ebd8baab9586b3b)
 missing_reasons: {}
 ```

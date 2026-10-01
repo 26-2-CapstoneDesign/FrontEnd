@@ -25,7 +25,7 @@ approval_refs:
 - 'EXPLICIT_REQUEST@2026-10-01T06:40Z: 현재 대화의 사용자 요청 - 회원가입 관련 작업을 AI_RULES 기준으로 최종 정리'
 - 'EXPLICIT_REQUEST@2026-10-01T07:03Z: 현재 대화의 사용자 답변 - 완료 기준 21개 승인 유지, 분모 변경 금지'
 - 'EXPLICIT_REQUEST@2026-10-01T07:14Z: 현재 대화의 사용자 요청 - 실제 키보드 검증 완료 보고(아이디·이메일 Backspace 전체 삭제 시 버튼 비활성 복귀, 비밀번호 20자 초과 입력 불가), 결정 대기 항목 임의 결정 금지'
-updated_at: '2026-10-01T07:16:07Z'
+updated_at: '2026-10-01T07:25:45Z'
 source_revision: 95bf65f6a2ccf79a2cb9cc3a59a8a2b546d4a0c8
 feature_file: docs/features/SIGNUP.md
 latest_worklog: docs/worklogs/signup-feature-001__jb__20261001T045008Z.md
@@ -35,7 +35,7 @@ acceptance_passed: 11
 acceptance_total: 21
 verification_status: PARTIAL
 review_status: PENDING
-integration_status: NOT_MERGED
+integration_status: BRANCH_ONLY
 deployment_status: NOT_DEPLOYED
 missing_reasons:
   human_owner: 프로젝트 담당자로 등록된 사람 ID가 없음(CURRENT_STATE.md의 human_owner=null).
@@ -296,11 +296,12 @@ remaining_work:
 - 회원가입 API 연동 방식 결정과 구현
 completion_requires: {review_status: APPROVED, integration_status: null, deployment_status: null}
 review_evidence: []
-integration_evidence: []
+integration_evidence:
+- 'jb 브랜치 커밋 ff75c557a4c0c7f8c8de574ad819e654b00bb124(feat: implement signup UI and link from login) origin/jb push 완료. 2026-10-01T07:24:56Z 확인 - HEAD와 origin/jb 동일, origin/develop 미포함, jb의 열린 PR 0건 (signup-feature-001 E020)'
 deployment_evidence: []
 completion_event_ref: null
 limitations:
-- 변경은 커밋되지 않은 로컬 작업 트리에만 있다.
+- 변경은 jb 브랜치(origin/jb)에만 있고 develop에는 병합되지 않았다.
 - 명세의 결과 문구는 상수로 있으나 API가 없어 화면에 표시될 경로가 없다.
 - 회원가입 버튼은 API 없이 활성화될 수 없다.
 - 실행 모델 식별자는 확인하지 못했다.

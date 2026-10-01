@@ -43,12 +43,12 @@ features:
   acceptance_total: 21
   verification_status: PARTIAL
   review_status: PENDING
-  integration_status: NOT_MERGED
+  integration_status: BRANCH_ONLY
   deployment_status: NOT_DEPLOYED
   feature_file: docs/features/SIGNUP.md
   latest_worklog: docs/worklogs/signup-feature-001__jb__20261001T045008Z.md
   source_revision: 95bf65f6a2ccf79a2cb9cc3a59a8a2b546d4a0c8
-  updated_at: '2026-10-01T07:16:07Z'
+  updated_at: '2026-10-01T07:25:45Z'
   missing_reasons:
     human_owner: 프로젝트 담당자로 등록된 사람 ID가 없음.
     acceptance_total: 상세 명세 1~11, 요구사항 표 REG-01~11, 요청 스타일 조건에서 정리한 21개(API 의존 기준 포함). 사용자가 2026-10-01T07:03Z 답변으로 승인 유지.
