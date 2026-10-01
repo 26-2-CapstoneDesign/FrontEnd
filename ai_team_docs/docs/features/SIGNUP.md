@@ -4,7 +4,7 @@
 schema_version: 3.1.0
 template: false
 record_type: feature
-summary_ko: 회원가입 화면 UI와 프론트엔드 입력 검증은 SignUp.jsx·SignUp.css에 구현했고 IMPLEMENTING 상태다. 사용자 요청으로 아이디 최대 30자, 아이디 중복확인·인증번호 발송 버튼의 입력 여부에 따른 활성 표시, 생년월일 년·월·일 단위 표시, 버튼 클릭 시 이메일 형식 검증을 추가했다. 브라우저에서 비밀번호·약관 동작과 로그인 화면에서의 이동을 확인하고, 사용자가 실제 키보드로 Backspace 삭제 시 버튼 비활성 복귀와 비밀번호 20자 초과 입력 차단을 확인해 완료 기준 21개 중 11개가 충족됐고, 좁은 화면에서 생년월일 연도가 잘리는 문제가 발견됐다. 명세·시안 불일치 항목의 사람 결정과 일부 확인이 남아 있다. 중복 확인·이메일 인증·가입 처리 API 연동은 API 명세가 없어 착수하지 않았다(NOT_STARTED). 회원가입 기능 전체는 완료가 아니다.
+summary_ko: 회원가입 화면 UI와 프론트엔드 입력 검증은 SignUp.jsx·SignUp.css에 구현했고 IMPLEMENTING 상태다. 사용자 요청으로 아이디 최대 30자, 아이디 중복확인·인증번호 발송 버튼의 입력 여부에 따른 활성 표시, 생년월일 년·월·일 단위 표시, 버튼 클릭 시 이메일 형식 검증을 추가했다. 브라우저에서 비밀번호·약관 동작과 로그인 화면에서의 이동을 확인하고, 사용자가 실제 키보드로 Backspace 삭제 시 버튼 비활성 복귀와 비밀번호 20자 초과 입력 차단을 확인해 완료 기준 21개 중 11개가 충족됐고, 좁은 화면에서 생년월일 연도가 잘리는 문제가 발견됐다. 명세·시안 불일치 항목의 사람 결정과 일부 확인이 남아 있다. 가입 처리는 API 명세 MEM-01의 제안값(POST /api/v1/members, loginName·nickname·email·password)으로 요청 코드를 추가했다(IMPLEMENTING, member-auth-api-001). 다만 회원가입 버튼이 중복 확인·이메일 인증 완료를 요구하고 해당 API가 없어 화면에서 요청을 보낼 수 없고, 백엔드 미구축으로 실제 통신은 현재 검증 불가다. 중복 확인·이메일 인증 API 연동과 백엔드 주소·proxy·환경변수 방식은 백엔드 구축 후 결정하도록 보류했다(NOT_STARTED). 회원가입 기능 전체는 완료가 아니다.
 feature_id: SIGNUP
 name: 회원가입
 human_owner: null
@@ -25,10 +25,13 @@ approval_refs:
 - 'EXPLICIT_REQUEST@2026-10-01T06:40Z: 현재 대화의 사용자 요청 - 회원가입 관련 작업을 AI_RULES 기준으로 최종 정리'
 - 'EXPLICIT_REQUEST@2026-10-01T07:03Z: 현재 대화의 사용자 답변 - 완료 기준 21개 승인 유지, 분모 변경 금지'
 - 'EXPLICIT_REQUEST@2026-10-01T07:14Z: 현재 대화의 사용자 요청 - 실제 키보드 검증 완료 보고(아이디·이메일 Backspace 전체 삭제 시 버튼 비활성 복귀, 비밀번호 20자 초과 입력 불가), 결정 대기 항목 임의 결정 금지'
-updated_at: '2026-10-01T07:25:45Z'
-source_revision: 95bf65f6a2ccf79a2cb9cc3a59a8a2b546d4a0c8
+- 'EXPLICIT_REQUEST@2026-10-01T16:51Z: 현재 대화의 사용자 요청 - SignUp.jsx에 MEM-01(POST /api/v1/members, loginName·nickname·email·password) 요청 추가, 이름·성별·생년월일 등은 요청에 넣지 않음, 성공 응답 구조 추측·자동 로그인 금지'
+- 'EXPLICIT_REQUEST(2026-10-01T16:51Z 이후 16:59:19Z 이전): 현재 대화의 사용자 답변 - 기존 검증 유지(화면에서 요청 불가 상태로 기록), 상대 경로 사용, 성공 시 /login 이동(REG-10), 제안 오류 문구 사용, SIGNUP-AC-18 문구 수정 승인(분모 유지)'
+- 'EXPLICIT_REQUEST@2026-10-01T17:13Z: 현재 대화의 사용자 요청 - 백엔드 주소·Vite proxy·환경변수·인증 방식은 백엔드 구축 후 결정으로 보류, 중복확인·이메일 인증 API 임의 생성 금지, 검증 불가 부분은 "현재 검증 불가"로 기록'
+updated_at: '2026-10-01T17:13:46Z'
+source_revision: b8a6a966a84cbebc431ddcd477ff41e4dfe5d012
 feature_file: docs/features/SIGNUP.md
-latest_worklog: docs/worklogs/signup-feature-001__jb__20261001T045008Z.md
+latest_worklog: docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md
 implementation_status: IMPLEMENTING
 work_status: WAITING_APPROVAL
 acceptance_passed: 11
@@ -51,9 +54,12 @@ scope:
 - '회원가입 UI: 아이디 중복확인 버튼과 인증번호 발송 버튼은 입력이 비어 있으면(공백만 입력 포함) 비활성·연한 색상, 1자 이상이면 진한 색상(is-primary)으로 표시하고, 다시 모두 지우면 비활성으로 돌아간다.'
 - '회원가입 UI: 생년월일 각 선택창 오른쪽에 년·월·일 단위를 항상 표시한다. 선택창 placeholder(년도·월·일)와 월·일 숫자 표기는 유지한다.'
 - '회원가입 UI: 스타일은 youth_guide/src/styles/SignUp.css에 작성하고 SignUp.jsx에서 import'
-- '회원가입 API 연동: 아이디·닉네임 중복 확인, 이메일 중복 검사·인증번호 발송·확인, 회원가입 처리·저장, 가입 성공 후 로그인 화면 이동 - 범위·방식 UNDECIDED'
+- '회원가입 API 연동(가입 처리): 기존 isSubmittable 검사를 통과하면 POST /api/v1/members(MEM-01, 상대 경로)에 Content-Type application/json, Body {loginName, nickname, email, password}를 보낸다. 2xx면 /login으로 이동, 400 "입력값을 다시 확인해 주세요.", 409 "이미 사용 중인 아이디, 닉네임 또는 이메일입니다.", 그 외 상태·연결 실패 "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요."를 회원가입 버튼 위에 표시한다. 응답 본문은 읽지 않는다.'
+- '회원가입 API 연동(아이디·닉네임 중복 확인, 이메일 중복 검사·인증번호 발송·확인): 범위·방식 UNDECIDED'
 excluded_scope:
-- 현재 단계의 백엔드 API 호출, 중복 확인·이메일 인증·회원가입 API 생성, API 필드·응답값 정의
+- 중복 확인·이메일 인증 API 호출, 백엔드 API 생성, 명세에 없는 API 필드·응답값 정의
+- 이름·성별·생년월일·약관 동의를 MEM-01 요청에 포함(Request Body에 없음)
+- 회원가입 성공 후 자동 로그인(MEM-01 가입 완료는 이메일 인증 완료·자동 로그인을 의미하지 않음)
 - 새로운 라이브러리·dependency 추가
 - Login.jsx·Login.css·다른 페이지 수정(회원가입 작업 범위)
 dependency_refs:
@@ -61,7 +67,10 @@ dependency_refs:
 - youth_guide/src/components/Layout.jsx의 Outlet과 Link to="/signup"(기존 레이아웃, 수정하지 않음)
 - youth_guide/src/pages/Login.jsx의 회원가입 버튼 navigate("/signup")(login-feature-001, 브라우저 클릭 이동 확인 E029)
 unknowns:
-- '아이디·닉네임 중복 확인, 이메일 인증, 회원가입 API의 엔드포인트·요청·응답 구조: UNDECIDED'
+- '아이디·닉네임 중복 확인, 이메일 인증 API의 엔드포인트·요청·응답 구조: UNDECIDED - 보류(백엔드 구축 후 결정), 임의 생성 금지(2026-10-01T17:13Z 사용자 지시)'
+- '회원가입 API 계약: API 명세 MEM-01의 URL·Request 필드는 제안(PROPOSED)이고 백엔드 구현 상태는 NOT_IMPLEMENTED다(사용자 메시지 발췌, 저장소에 명세 문서 없음). 성공 응답 구조와 오류 응답 본문 구조: UNDECIDED. 409가 아이디·닉네임·이메일 중 무엇의 충돌인지 구분할 방법: UNDECIDED. 모두 보류(백엔드 구축 후 결정)'
+- '백엔드 주소·Vite proxy·환경변수 방식: UNDECIDED - 보류(백엔드 구축 후 결정). 임의 주소·proxy·환경변수 추가 금지(2026-10-01T17:13Z 사용자 지시). 현재 코드는 명세 endpoint 상대 경로만 사용'
+- '이름·성별·생년월일 입력값의 서버 전달 방식: UNDECIDED(MEM-01 Request Body에 없음)'
 - '비밀번호 안내 문구: 명세와 시안 문구가 다름, UNDECIDED'
 - '비밀번호 안내 문구 색: 명세 검은색, 시안 회색, UNDECIDED'
 - '성별 표시 순서: 명세 남성/여성/비공개, 시안 여성/남성/비공개, UNDECIDED'
@@ -78,6 +87,7 @@ acceptance_approval_refs:
 - 'EXPLICIT_REQUEST@2026-10-01T04:18Z: 현재 대화의 사용자 요청(구성·검증·스타일 조건)'
 - 'EXPLICIT_REQUEST@2026-10-01T04:19Z: 현재 대화의 사용자 첨부(상세 명세 1~11, 요구사항 표 REG-01~11)'
 - 'EXPLICIT_REQUEST@2026-10-01T07:03Z: 현재 대화의 사용자 답변(21개 기준 승인 유지, 분모 21 유지)'
+- 'EXPLICIT_REQUEST(2026-10-01T16:51Z 이후 16:59:19Z 이전): 현재 대화의 사용자 답변(SIGNUP-AC-18 문구 수정 승인, 분모 21 유지)'
 acceptance_criteria:
 - ac_id: SIGNUP-AC-01
   condition: 아이디 입력창 속성(명세 1, REG-01)
@@ -183,16 +193,16 @@ acceptance_criteria:
   source_revision: 95bf65f6a2ccf79a2cb9cc3a59a8a2b546d4a0c8
 - ac_id: SIGNUP-AC-18
   condition: 회원가입 버튼 클릭(명세 11, REG-09)
-  expected: 회원정보를 저장하고 가입을 완료한다.
+  expected: 'POST /api/v1/members(MEM-01)에 Content-Type application/json, Body {loginName, nickname, email, password}로 가입을 요청하고, 2xx가 아니면 응답 HTTP 상태에 맞는 문구(400·409·그 외/연결 실패)를 표시한다.'
   status: UNVERIFIED
-  evidence_refs: ['회원가입 API 미연결. 코드상 활성 시 "회원가입 서버가 아직 연결되지 않았습니다." 표시']
-  source_revision: 95bf65f6a2ccf79a2cb9cc3a59a8a2b546d4a0c8
+  evidence_refs: ['문구 변경 전 기준("회원정보를 저장하고 가입을 완료한다.")은 2026-10-01 사용자 승인으로 대체됨(member-auth-api-001 E001)', 'docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md#E002 코드상 handleSubmit에서 isSubmittable 통과 후 fetch 호출, lint·build 통과', '회원가입 버튼이 중복 확인·이메일 인증 API 부재로 활성화될 수 없어 화면에서 요청 전송 미확인, 백엔드 NOT_IMPLEMENTED로 실제 응답 미확인']
+  source_revision: b8a6a966a84cbebc431ddcd477ff41e4dfe5d012
 - ac_id: SIGNUP-AC-19
   condition: 회원가입 성공(REG-10)
   expected: 로그인 화면으로 이동한다.
   status: UNVERIFIED
-  evidence_refs: ['가입 처리 API가 없어 미구현']
-  source_revision: 95bf65f6a2ccf79a2cb9cc3a59a8a2b546d4a0c8
+  evidence_refs: ['docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md#E002 코드상 MEM-01 응답 response.ok면 navigate("/login")', '가입 요청을 화면에서 보낼 수 없고 백엔드가 NOT_IMPLEMENTED라 실제 이동 미확인']
+  source_revision: b8a6a966a84cbebc431ddcd477ff41e4dfe5d012
 - ac_id: SIGNUP-AC-20
   condition: /signup 화면 표시(요청 "첨부한 디자인과 동일한 형태")
   expected: 시안과 같은 항목·순서·형태로 표시된다.
@@ -208,7 +218,7 @@ acceptance_criteria:
 components:
 - path: youth_guide/src/pages/SignUp.jsx
   symbol: SignUp / isValidPassword / isValidEmail / handleSendCode / isUserIdEmpty / isEmailEmpty / getDaysInMonth / FieldMessage
-  role: '회원가입 UI: 화면 구성, 입력 상태 관리, 프론트엔드 검증(이메일 형식 포함), 버튼 활성 표시, 서버 미연결 안내'
+  role: '회원가입 UI: 화면 구성, 입력 상태 관리, 프론트엔드 검증(이메일 형식 포함), 버튼 활성 표시, 중복 확인·이메일 인증 서버 미연결 안내'
   implementation_status: IMPLEMENTING
   remaining_work:
   - SIGNUP-AC-04 결정과 반영
@@ -223,12 +233,21 @@ components:
   - hover·focus 확인
   - SIGNUP-AC-20 사람 판단
   task_refs: [signup-feature-001]
+- path: youth_guide/src/pages/SignUp.jsx
+  symbol: handleSubmit / fetch("/api/v1/members") / SIGNUP_ERROR_MESSAGES / isSubmitting / navigate("/login")
+  role: '회원가입 API 연동(가입 처리): MEM-01 요청 전송, HTTP 상태 코드별 문구 표시, 성공 시 로그인 화면 이동'
+  implementation_status: IMPLEMENTING
+  remaining_work:
+  - 화면에서 요청 전송 확인(회원가입 버튼 활성화에 중복 확인·이메일 인증 API 필요)
+  - 실제 백엔드 응답 확인(현재 검증 불가, 보류)
+  - 백엔드 주소·Vite proxy·환경변수 방식(보류, 백엔드 구축 후 결정)
+  task_refs: [member-auth-api-001]
 - path: null
   symbol: null
-  role: '회원가입 API 연동: 중복 확인, 이메일 인증, 회원가입 처리, 가입 후 이동'
+  role: '회원가입 API 연동: 아이디·닉네임 중복 확인, 이메일 인증'
   implementation_status: NOT_STARTED
   remaining_work:
-  - API 명세 결정(UNDECIDED)
+  - API 명세 결정(UNDECIDED, 보류 - 백엔드 구축 후 결정, 임의 생성 금지)
   task_refs: []
 connections:
 - from: {path: youth_guide/src/App.jsx, symbol: 'Route path="/signup"'}
@@ -249,13 +268,19 @@ connections:
   contract_ref: 기존 라우팅
   purpose: 로그인 화면에서 회원가입 화면으로 이동한다(login-feature-001).
   verification_evidence: ['docs/worklogs/login-feature-001__jb__20260930T121505Z.md#E026 빌드 통과', 'docs/worklogs/login-feature-001__jb__20260930T121505Z.md#E029 브라우저에서 클릭 후 /signup 이동·회원가입 제목 표시 확인']
-- from: {path: youth_guide/src/pages/SignUp.jsx, symbol: 중복 확인·인증번호·회원가입 버튼}
+- from: {path: youth_guide/src/pages/SignUp.jsx, symbol: 중복 확인·인증번호 버튼}
   to: {path: null, symbol: null, external_boundary: UNDECIDED}
   payload: UNDECIDED
   contract_ref: null
-  purpose: 회원가입 API 연동(미착수). 현재는 외부 호출 없이 서버 미연결 안내만 설정한다.
+  purpose: 중복 확인·이메일 인증 API 연동(미착수). 현재는 외부 호출 없이 서버 미연결 안내만 설정한다.
   verification_evidence: []
-verified_flow: /login 회원가입 버튼 클릭 → /signup 이동 → SignUp 렌더링 → SignUp.css 적용 → 모든 입력 항목·버튼 표시와 회원가입 버튼 비활성, 아이디·이메일 입력에 따른 버튼 활성 변화, 비밀번호 규칙·확인 문구, 약관 전체·개별 동의와 필수 약관 안내, 이메일 형식 검사 문구, 데스크톱 폭 생년월일 단위 표시까지 브라우저에서 확인했다. 좁은 화면 표시는 연도 잘림 문제가 있고, 회원가입 버튼 활성화와 API 연동 흐름은 확인하지 않았다.
+- from: {path: youth_guide/src/pages/SignUp.jsx, symbol: handleSubmit}
+  to: {path: null, symbol: null, external_boundary: 'HTTP POST /api/v1/members (상대 경로, 백엔드 주소는 백엔드 구축 후 결정)'}
+  payload: 'Content-Type application/json, Body {"loginName": string, "nickname": string, "email": string, "password": string}'
+  contract_ref: 'API 명세 MEM-01(사용자 메시지 발췌, URL·필드 PROPOSED, 백엔드 NOT_IMPLEMENTED)'
+  purpose: 가입 요청을 보내고 응답 HTTP 상태 코드로 이동·문구를 정한다. 응답 본문은 읽지 않는다.
+  verification_evidence: ['docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md#E002 lint·build 통과와 코드 확인만 함. 화면에서 요청 전송·응답은 미확인']
+verified_flow: /login 회원가입 버튼 클릭 → /signup 이동 → SignUp 렌더링 → SignUp.css 적용 → 모든 입력 항목·버튼 표시와 회원가입 버튼 비활성, 아이디·이메일 입력에 따른 버튼 활성 변화, 비밀번호 규칙·확인 문구, 약관 전체·개별 동의와 필수 약관 안내, 이메일 형식 검사 문구, 데스크톱 폭 생년월일 단위 표시까지 브라우저에서 확인했다. MEM-01 요청 코드 추가 후에도 기존 화면과 회원가입 버튼 비활성을 확인했다(member-auth-api-001 E002). 좁은 화면 표시는 연도 잘림 문제가 있고, 회원가입 버튼 활성화와 MEM-01 요청·응답 흐름은 확인하지 않았다.
 verification_scope: MIXED
 required_checks:
 - npm run lint
@@ -272,28 +297,32 @@ check_evidence:
 - '이메일 형식 검증: 빈칸 클릭 시 오류 문구(E003, 버튼 비활성화 전), abc·abc@gmail 클릭 시 오류 문구, abc 입력 중 문구 없음, abc@gmail.com 클릭 시 서버 미연결 안내 확인 (signup-email-validation-001 worklog E003·E012)'
 - '인증번호 발송 버튼 활성 표시: 빈칸이면 비활성·연한 색, "a" 입력 시 진한 남색, 다시 비우면 비활성 복귀 확인 (signup-email-validation-001 worklog E012)'
 - '로그인 → 회원가입 이동: 로그인 폼의 회원가입 버튼 클릭 시 /signup 이동 확인 (login-feature-001 worklog E029)'
-- 'API 연동: 대상 없음(미착수)'
+- 'MEM-01 요청(member-auth-api-001): lint 진단 없음 LINT_EXIT=0, vite build 성공, /signup 기존 화면·회원가입 버튼 disabled 확인. 화면에서 요청 전송과 실제 백엔드 통신은 미확인 (worklog member-auth-api-001 E002)'
 exception_coverage:
 - 아이디·닉네임 중복 확인 버튼, 인증번호 발송 버튼, 인증번호 확인 버튼은 입력이 비어 있으면(공백만 입력 포함) 비활성이다.
 - 인증번호 발송 버튼은 클릭 시 이메일 형식을 검사하고, 잘못된 형식이면 "이메일 형식이 올바르지 않습니다."를 표시한다. 빈칸에서는 버튼이 비활성이라 클릭할 수 없다.
 - 아이디·이메일·인증번호·닉네임 입력을 바꾸면 해당 확인 상태가 초기화된다.
 - 연·월을 바꿔 선택한 일이 그 달의 일 수를 넘으면 일 선택을 비운다.
-- 백엔드가 없어 확인 결과(성공·실패)는 만들지 않고 서버 미연결 안내만 표시한다.
+- 중복 확인·이메일 인증은 백엔드가 없어 확인 결과(성공·실패)를 만들지 않고 서버 미연결 안내만 표시한다.
+- 가입 요청(MEM-01)은 400·409면 상태별 문구, 그 밖의 상태 코드와 네트워크 오류면 "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요."를 표시하고, 요청 중에는 회원가입 버튼을 비활성화한다.
 blockers:
 - '회원가입 UI: 명세·시안 불일치와 미정 항목의 사람 결정 대기(worklog E009, APPROVAL_GAP)'
 - '회원가입 UI: 좁은 화면 생년월일 연도 잘림의 해결 방식 결정 대기(worklog E013)'
-- '회원가입 API 연동: API 명세가 정해지지 않음(UNDECIDED)'
+- '회원가입 API 연동: 보류(백엔드 구축 후 결정) - 중복 확인·이메일 인증 API가 없어 회원가입 버튼을 활성화할 수 없고, MEM-01 요청을 화면에서 보낼 수 없음(현재 검증 불가)'
+- '회원가입 API 연동: 보류(백엔드 구축 후 결정) - 백엔드 미구축으로 실제 응답 현재 검증 불가, 백엔드 주소·Vite proxy·환경변수 방식 미정(member-auth-api-001 E004 STOP)'
 resume_when:
 - 사용자가 worklog E009의 결정 요청에 답할 때
 - 사용자가 생년월일 좁은 화면 표시의 해결 방식을 정할 때
-- 회원가입 관련 API 명세가 사람에 의해 확정될 때
+- 중복 확인·이메일 인증 API 명세가 사람에 의해 확정될 때
+- 백엔드 MEM-01이 구축되고 접근 방식(주소·proxy·환경변수)이 정해질 때
 next_action: 사용자 확인을 받는다. 확인 전에는 추가 작업을 하지 않는다.
 remaining_work:
 - 명세·시안 불일치 결정과 반영
 - 생년월일 좁은 화면 연도 잘림 해결
 - 사람 검토
 - 추가 요청 UI의 완료 기준 편입 여부 결정
-- 회원가입 API 연동 방식 결정과 구현
+- 중복 확인·이메일 인증 API 연동 방식 결정과 구현
+- MEM-01 화면 요청 전송·실제 백엔드 응답 확인
 completion_requires: {review_status: APPROVED, integration_status: null, deployment_status: null}
 review_evidence: []
 integration_evidence:
@@ -302,8 +331,10 @@ deployment_evidence: []
 completion_event_ref: null
 limitations:
 - 변경은 jb 브랜치(origin/jb)에만 있고 develop에는 병합되지 않았다.
+- MEM-01 요청 코드(member-auth-api-001)는 커밋되지 않은 로컬 작업 트리에만 있다.
 - 명세의 결과 문구는 상수로 있으나 API가 없어 화면에 표시될 경로가 없다.
-- 회원가입 버튼은 API 없이 활성화될 수 없다.
+- 회원가입 버튼은 중복 확인·이메일 인증 API 없이 활성화될 수 없어, MEM-01 요청 코드도 화면에서 실행될 수 없다.
+- MEM-01 요청은 명세 endpoint 상대 경로만 사용하며, 백엔드 구축 전에는 개발 서버에서 404가 난다(현재 검증 불가).
 - 실행 모델 식별자는 확인하지 못했다.
-handoff: 회원가입 UI 확인은 youth_guide에서 npm run dev 실행 후 /signup에서 입력·버튼·약관을 직접 조작해 진행한다. 실행 중인 5199 서버(PID 66950, 2026-10-01T06:44:21Z에도 LISTEN)는 파일 변경을 반영하지 않으므로 종료 후 새로 띄운다. API 연동은 API 명세가 정해진 뒤 새 작업으로 시작한다.
+handoff: 회원가입 UI 확인은 youth_guide에서 npm run dev 실행 후 /signup에서 입력·버튼·약관을 직접 조작해 진행한다. 실행 중인 5199 서버(PID 66950, 2026-10-01T06:44:21Z에도 LISTEN)는 파일 변경을 반영하지 않으므로 종료 후 새로 띄운다. MEM-01 화면 확인은 중복 확인·이메일 인증 API 연동 후, 실제 응답 확인은 백엔드 구축과 접근 방식 결정 후 진행한다(보류).
 ```

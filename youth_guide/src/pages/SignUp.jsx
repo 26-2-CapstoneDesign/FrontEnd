@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/SignUp.css";
 
 const ID_MAX_LENGTH = 30;
@@ -44,7 +45,12 @@ const CODE_MESSAGES = {
 const PASSWORD_HINT = "영문, 숫자, 특수문자를 포함해 8자 이상 입력해 주세요.";
 const PASSWORD_MISMATCH = "비밀번호가 일치하지 않습니다.";
 const TERMS_REQUIRED = "필수 약관에 동의해주세요.";
-const SUBMIT_DISCONNECTED = "회원가입 서버가 아직 연결되지 않았습니다.";
+const REQUEST_FAILED = "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.";
+
+const SIGNUP_ERROR_MESSAGES = {
+  400: "입력값을 다시 확인해 주세요.",
+  409: "이미 사용 중인 아이디, 닉네임 또는 이메일입니다.",
+};
 
 const BIRTH_YEARS = Array.from(
   { length: BIRTH_YEAR_START - BIRTH_YEAR_END + 1 },
@@ -77,6 +83,7 @@ function FieldMessage({ message }) {
 }
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const [userId, setUserId] = useState("");
   const [idCheckStatus, setIdCheckStatus] = useState("idle");
   const [password, setPassword] = useState("");
@@ -97,6 +104,7 @@ export default function SignUp() {
   );
   const [isTermsTouched, setIsTermsTouched] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isUserIdEmpty = userId.trim() === "";
   const isEmailEmpty = email.trim() === "";
@@ -183,10 +191,29 @@ export default function SignUp() {
     setIsTermsTouched(true);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!isSubmittable) return;
-    setSubmitMessage(SUBMIT_DISCONNECTED);
+    if (!isSubmittable || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setSubmitMessage("");
+    try {
+      // MEM-01 Request Body에 정의된 필드만 보낸다. 이름·성별·생년월일·약관 동의는 명세에 없어 포함하지 않는다.
+      const response = await fetch("/api/v1/members", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ loginName: userId, nickname, email, password }),
+      });
+      if (response.ok) {
+        navigate("/login");
+        return;
+      }
+      setSubmitMessage(SIGNUP_ERROR_MESSAGES[response.status] ?? REQUEST_FAILED);
+    } catch {
+      setSubmitMessage(REQUEST_FAILED);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -480,13 +507,13 @@ export default function SignUp() {
           </fieldset>
 
           {submitMessage && (
-            <FieldMessage message={{ text: submitMessage, tone: "info" }} />
+            <FieldMessage message={{ text: submitMessage, tone: "error" }} />
           )}
 
           <button
             className="signup-submit"
             type="submit"
-            disabled={!isSubmittable}
+            disabled={!isSubmittable || isSubmitting}
           >
             회원가입
           </button>
