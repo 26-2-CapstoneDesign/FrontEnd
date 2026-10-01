@@ -38,7 +38,7 @@ acceptance_passed: 11
 acceptance_total: 21
 verification_status: PARTIAL
 review_status: PENDING
-integration_status: BRANCH_ONLY
+integration_status: PR_REVIEW
 deployment_status: NOT_DEPLOYED
 missing_reasons:
   human_owner: 프로젝트 담당자로 등록된 사람 ID가 없음(CURRENT_STATE.md의 human_owner=null).
@@ -331,7 +331,7 @@ deployment_evidence: []
 completion_event_ref: null
 limitations:
 - 변경은 jb 브랜치(origin/jb)에만 있고 develop에는 병합되지 않았다.
-- MEM-01 요청 코드(member-auth-api-001)는 커밋되지 않은 로컬 작업 트리에만 있다.
+- MEM-01 요청 코드(member-auth-api-001)는 jb 브랜치 커밋 cbfaa92로 origin/jb에 push되었고 develop에는 병합되지 않았다.
 - 명세의 결과 문구는 상수로 있으나 API가 없어 화면에 표시될 경로가 없다.
 - 회원가입 버튼은 중복 확인·이메일 인증 API 없이 활성화될 수 없어, MEM-01 요청 코드도 화면에서 실행될 수 없다.
 - MEM-01 요청은 명세 endpoint 상대 경로만 사용하며, 백엔드 구축 전에는 개발 서버에서 404가 난다(현재 검증 불가).

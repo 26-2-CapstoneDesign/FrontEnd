@@ -32,7 +32,7 @@ acceptance_passed: 8
 acceptance_total: 13
 verification_status: PARTIAL
 review_status: PENDING
-integration_status: NOT_MERGED
+integration_status: PR_REVIEW
 deployment_status: NOT_DEPLOYED
 missing_reasons:
   human_owner: 프로젝트 담당자로 등록된 사람 ID가 없음(CURRENT_STATE.md의 human_owner=null).

@@ -23,7 +23,7 @@ features:
   acceptance_total: 13
   verification_status: PARTIAL
   review_status: PENDING
-  integration_status: NOT_MERGED
+  integration_status: PR_REVIEW
   deployment_status: NOT_DEPLOYED
   feature_file: docs/features/LOGIN.md
   latest_worklog: docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md
@@ -43,7 +43,7 @@ features:
   acceptance_total: 21
   verification_status: PARTIAL
   review_status: PENDING
-  integration_status: BRANCH_ONLY
+  integration_status: PR_REVIEW
   deployment_status: NOT_DEPLOYED
   feature_file: docs/features/SIGNUP.md
   latest_worklog: docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md

@@ -16,7 +16,7 @@ actor_id: jb
 tool: Cursor Agent
 actual_model: null
 started_at: '2026-10-01T05:19Z'
-recorded_at: '2026-10-01T07:26:13Z'
+recorded_at: '2026-10-01T17:21:59Z'
 timezone: UTC
 source_revision: 95bf65f6a2ccf79a2cb9cc3a59a8a2b546d4a0c8
 existing_edits:
@@ -52,9 +52,9 @@ implementation_status: IMPLEMENTING
 work_status: WAITING_APPROVAL
 verification_status: PARTIAL
 review_status: PENDING
-integration_status: BRANCH_ONLY
+integration_status: PR_REVIEW
 deployment_status: NOT_DEPLOYED
-latest_event_id: E018
+latest_event_id: E019
 previous_log: docs/worklogs/signup-feature-001__jb__20261001T045008Z.md
 remaining_work:
 - 작업 완료 기준 목록(EMAIL-AC-01~12, E010·E013)의 사람 승인
@@ -1365,5 +1365,59 @@ state_updates:
 - path: ai_team_docs/docs/features/SIGNUP.md
   result: NOT_APPLICABLE
   evidence_ref: signup-feature-001 E021에서 반영·확인(sha256 2af219b98adfe6b490640981e3467b43524e4fbc0f3346313ebd8baab9586b3b)
+missing_reasons: {}
+```
+
+## E019 — 열린 PR #4 확인과 integration_status PR_REVIEW 갱신
+
+```yaml
+template: false
+record_type: event
+summary_ko: 'jb→develop PR #4가 열려 있고 이 작업의 코드 변경이 들어 있는 커밋 ff75c55가 포함되어 있어, 사용자 요청에 따라 session integration_status를 BRANCH_ONLY → PR_REVIEW로 바꾼다. 다른 상태 값과 내용은 바꾸지 않는다.'
+event_id: E019
+event_type: CHECKPOINT
+actor_id: jb
+recorded_at: '2026-10-01T17:21:35Z'
+occurred_at: '2026-10-01T17:21:26Z'
+source_revision: cbfaa92d2580c241199e8f7c0026439bb6a6299d
+rule_refs:
+- rule_id: C04
+  rule_text: MUST NOT invent features, stacks, API fields, approvals, worker identities, timestamps or successful results.
+  source_path: ai_team_docs/AI_RULES.md
+approval_refs:
+- 'EXPLICIT_REQUEST@2026-10-01T17:21Z: 현재 대화의 사용자 요청 - signup 관련 worklog 2개의 integration_status BRANCH_ONLY → PR_REVIEW, integration_status 외 변경 금지, commit·push 금지'
+actions:
+- 'session integration_status BRANCH_ONLY → PR_REVIEW.'
+- '확인 근거는 signup-feature-001 E022에 있다. 이전 E018(BRANCH_ONLY)은 당시 열린 PR 0건 확인에 근거한 기록이라 고치지 않는다.'
+changes:
+- path: ai_team_docs/docs/worklogs/signup-email-validation-001__jb__20261001T055853Z.md
+  symbol: session.integration_status / latest_event_id / recorded_at / E019
+  operation: MODIFY
+  reason: 열린 PR 반영
+checks:
+- command: git log --oneline origin/develop..origin/jb + GitHub REST API 열린 PR 조회
+  environment: 로컬 저장소·GitHub REST API(2026-10-01T17:21:26Z)
+  input: jb, origin/develop, 열린 PR
+  expected: 이 작업 커밋이 열린 PR에 포함
+  observed: 'ff75c55 IN_DEVELOP_EXIT=1, OPEN_PRS=1(#4 base develop, head_sha cbfaa92, merged_at null)'
+  result: PASSED
+  evidence_ref: docs/worklogs/signup-feature-001__jb__20261001T045008Z.md#E022
+unperformed_checks: []
+state_before:
+  work_status: WAITING_APPROVAL
+  integration_status: BRANCH_ONLY
+state_after:
+  work_status: WAITING_APPROVAL
+  implementation_status: IMPLEMENTING
+  integration_status: PR_REVIEW
+remaining_work:
+- 작업 완료 기준 목록(EMAIL-AC-01~12) 사람 승인
+- 사람 검토
+- 이메일 중복 검사·인증번호 발송 API 연동(보류, 백엔드 구축 후 결정)
+next_action: 사용자에게 보고한다. 확인 전에는 추가 작업을 하지 않는다.
+state_updates:
+- path: ai_team_docs/docs/worklogs/signup-email-validation-001__jb__20261001T055853Z.md
+  result: APPLIED
+  evidence_ref: 이 파일 session.integration_status PR_REVIEW
 missing_reasons: {}
 ```
