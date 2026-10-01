@@ -4,7 +4,7 @@
 schema_version: 3.1.0
 template: false
 record_type: feature
-summary_ko: 로그인 UI는 UI 코드 구현을 마쳤고 브라우저 검증을 기다리고 있어 IMPLEMENTING 상태다. 로그인 API 연동은 API·인증 방식·데이터 구조가 정해지지 않아 착수하지 않았다(NOT_STARTED). 로그인 기능 전체는 완료가 아니다.
+summary_ko: 로그인 UI는 UI 코드 구현을 마쳤고 브라우저 검증을 기다리고 있어 IMPLEMENTING 상태다. 사용자 요청으로 로그인 버튼 옆에 회원가입 버튼(테두리형)을 두고, 클릭 시 /signup으로 이동하도록 구현했으며 이동은 브라우저에서 확인했다. 로그인 입력·체크박스·로그인 버튼 안내 메시지 등은 아직 브라우저에서 확인하지 못했다. 로그인 API 연동은 API·인증 방식·데이터 구조가 정해지지 않아 착수하지 않았다(NOT_STARTED). 로그인 기능 전체는 완료가 아니다.
 feature_id: LOGIN
 name: 로그인
 human_owner: null
@@ -15,8 +15,12 @@ approval_refs:
 - 'EXPLICIT_REQUEST@2026-09-30T11:48Z: 현재 대화의 사용자 요청 - 로그인 화면 UI 구현(백엔드 미연결)'
 - 'EXPLICIT_REQUEST@2026-09-30T11:59Z: 현재 대화의 사용자 요청 - 비밀번호 입력창 최대 20자 제한'
 - 'EXPLICIT_REQUEST(시각 미제공): 현재 대화의 사용자 답변 - 기능 ID LOGIN 등록, 로그인 UI와 API 연동 구분, 로그인 UI는 IMPLEMENTING'
-updated_at: '2026-09-30T12:51:09Z'
-source_revision: f7ebd19a9ac4c291ce3897bb4306f8206b83f47c
+- 'EXPLICIT_REQUEST@2026-09-30T12:55Z: 현재 대화의 사용자 요청 - 로그인 버튼 영역을 반으로 나눠 로그인·회원가입 버튼 배치(회원가입은 UI만)'
+- 'EXPLICIT_REQUEST@2026-09-30T13:16Z: 현재 대화의 사용자 요청 - 회원가입 버튼 흰 배경·파란 테두리·글자, 두 버튼 크기·높이 동일'
+- 'EXPLICIT_REQUEST@2026-10-01T04:42Z: 현재 대화의 사용자 요청 - 회원가입 버튼 클릭 시 회원가입 페이지로 이동'
+- 'EXPLICIT_REQUEST@2026-10-01T06:40Z: 현재 대화의 사용자 요청 - 회원가입 관련 작업을 AI_RULES 기준으로 최종 정리, 구현과 문서 일치'
+updated_at: '2026-10-01T07:05:52Z'
+source_revision: 95bf65f6a2ccf79a2cb9cc3a59a8a2b546d4a0c8
 feature_file: docs/features/LOGIN.md
 latest_worklog: docs/worklogs/login-feature-001__jb__20260930T121505Z.md
 implementation_status: IMPLEMENTING
@@ -37,13 +41,14 @@ scope:
 - '로그인 UI: 제목, 아이디 입력창, 비밀번호 입력창(가림, 최대 20자), 로그인 상태 유지 체크박스, 로그인 버튼, 아이디 찾기 버튼, 비밀번호 찾기 버튼, 안내·오류 메시지 영역'
 - '로그인 UI: 로그인 버튼 클릭 시 "로그인 서버가 아직 연결되지 않았습니다." 안내 메시지 표시'
 - '로그인 UI: 화면 중앙 배치, hover·focus 스타일, 작은 화면 대응, 스타일은 styles/Login.css에만 작성'
+- '로그인 UI: 로그인 버튼과 같은 줄·같은 크기의 회원가입 버튼(흰 배경, 파란 테두리·글자). 클릭 시 /signup(회원가입 화면)으로 이동'
 - '로그인 API 연동: 범위·방식 UNDECIDED'
 excluded_scope:
 - 현재 단계의 백엔드 API 호출, 로그인 성공·실패 판단, 로그인 후 페이지 이동
 - 아이디 찾기·비밀번호 찾기 기능과 페이지 이동(현재는 버튼 UI만)
-- 회원가입 버튼(사용자 제공 시안에는 있으나 요청 구성에 없음)
 dependency_refs:
 - youth_guide/src/App.jsx의 Route path="/login"(기존 라우팅, 수정하지 않음)
+- youth_guide/src/App.jsx의 Route path="/signup"(기존 라우팅, 회원가입 버튼 이동 대상, 수정하지 않음)
 - youth_guide/src/components/Layout.jsx의 Outlet(기존 레이아웃, 수정하지 않음)
 unknowns:
 - '로그인 API 엔드포인트·요청·응답 구조: UNDECIDED'
@@ -54,6 +59,7 @@ unknowns:
 - '로그인 실패 시 오류 메시지의 조건·문구: UNDECIDED'
 - '아이디 찾기·비밀번호 찾기 기능: UNDECIDED'
 - '로그인 API 연동의 완료 기준: UNDECIDED'
+- '회원가입 버튼 UI·이동의 완료 기준 편입 여부: UNDECIDED(분모 변경은 사람 승인 필요, C21)'
 acceptance_definition_status: APPROVED
 acceptance_approval_refs:
 - 'EXPLICIT_REQUEST@2026-09-30T11:48Z: 현재 대화의 사용자 요청(로그인 화면 구성·기능·스타일)'
@@ -129,7 +135,7 @@ acceptance_criteria:
   condition: 비밀번호 입력창 속성
   expected: HTML maxLength가 20으로 설정되어 있다.
   status: MET
-  evidence_refs: ['E009 rg 결과 Login.jsx 44행 maxLength={20}']
+  evidence_refs: ['E009 rg 결과 Login.jsx 44행 maxLength={20}(현재 46행)']
   source_revision: f7ebd19a9ac4c291ce3897bb4306f8206b83f47c
 - ac_id: LOGIN-AC-16
   condition: 비밀번호를 21자 이상 입력
@@ -139,8 +145,8 @@ acceptance_criteria:
   source_revision: f7ebd19a9ac4c291ce3897bb4306f8206b83f47c
 components:
 - path: youth_guide/src/pages/Login.jsx
-  symbol: Login / handleSubmit
-  role: '로그인 UI: 화면 구성, 입력 상태 관리, 서버 미연결 안내 메시지'
+  symbol: Login / handleSubmit / navigate("/signup")
+  role: '로그인 UI: 화면 구성, 입력 상태 관리, 서버 미연결 안내 메시지, 회원가입 화면 이동'
   implementation_status: IMPLEMENTING
   remaining_work:
   - LOGIN-AC-02·03·04·05·07·16 브라우저 확인
@@ -173,13 +179,19 @@ connections:
   contract_ref: null
   purpose: 로그인 화면 전용 스타일을 적용한다.
   verification_evidence: ['docs/worklogs/login-feature-001__jb__20260930T121505Z.md#E004']
+- from: {path: youth_guide/src/pages/Login.jsx, symbol: 'button.login-signup onClick navigate("/signup")'}
+  to: {path: youth_guide/src/pages/SignUp.jsx, symbol: SignUp, external_boundary: null}
+  payload: 없음(경로 이동)
+  contract_ref: 기존 라우팅(App.jsx Route path="/signup")
+  purpose: 로그인 화면에서 회원가입 화면으로 이동한다.
+  verification_evidence: ['docs/worklogs/login-feature-001__jb__20260930T121505Z.md#E029 클릭 후 /signup 이동·회원가입 제목 표시']
 - from: {path: youth_guide/src/pages/Login.jsx, symbol: handleSubmit}
   to: {path: null, symbol: null, external_boundary: UNDECIDED}
   payload: UNDECIDED
   contract_ref: null
   purpose: '로그인 API 연동(미착수). 현재는 외부 호출 없이 안내 메시지만 설정한다.'
   verification_evidence: []
-verified_flow: /login 접속 → Login 렌더링 → Login.css 적용 → 제목·입력창·체크박스·버튼 표시까지 확인했다. 입력·클릭 → 메시지 표시 흐름과 API 연동 흐름은 확인하지 않았다.
+verified_flow: /login 접속 → Login 렌더링 → Login.css 적용 → 제목·입력창·체크박스·버튼 표시까지 확인했고, 회원가입 버튼 클릭 → /signup 이동을 확인했다. 입력·로그인 버튼 클릭 → 메시지 표시 흐름과 API 연동 흐름은 확인하지 않았다.
 verification_scope: MIXED
 required_checks:
 - npm run lint
@@ -189,7 +201,8 @@ check_evidence:
 - 'npm run lint: 진단 없음, EXIT=0 (worklog E009)'
 - 'vite build: 성공, /tmp 출력 (worklog E004)'
 - '브라우저 화면 표시: 접근성 스냅샷·스크린샷으로 요소 존재와 중앙 배치 확인 (worklog E004)'
-- '브라우저 상호작용: 도구 차단으로 미실행 (worklog E003)'
+- '브라우저 상호작용: 입력·체크박스·로그인 버튼은 도구 차단으로 미실행 (worklog E003·E017)'
+- '회원가입 버튼 이동: 5202 개발 서버에서 로그인 폼의 회원가입 버튼 클릭 시 /signup 이동 확인 (worklog E029)'
 - 'API 연동: 대상 없음(미착수)'
 exception_coverage:
 - 백엔드가 없으므로 로그인 버튼은 입력값과 관계없이 같은 안내 메시지를 설정한다.

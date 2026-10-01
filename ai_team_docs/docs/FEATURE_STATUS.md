@@ -14,7 +14,7 @@ inventory_status: UNVERIFIED
 features:
 - feature_id: LOGIN
   name: 로그인
-  summary_ko: '로그인 UI: UI 코드 구현 완료, 브라우저 검증 대기(IMPLEMENTING). 로그인 API 연동: API·인증 방식 미정으로 미착수(NOT_STARTED). 로그인 기능 전체는 완료가 아니다.'
+  summary_ko: '로그인 UI: UI 코드 구현(회원가입 버튼과 /signup 이동 포함), 회원가입 이동은 브라우저 확인됨, 입력·로그인 버튼 동작은 브라우저 검증 대기(IMPLEMENTING). 로그인 API 연동: API·인증 방식 미정으로 미착수(NOT_STARTED). 로그인 기능 전체는 완료가 아니다.'
   human_owner: null
   actor_id: jb
   implementation_status: IMPLEMENTING
@@ -27,11 +27,31 @@ features:
   deployment_status: NOT_DEPLOYED
   feature_file: docs/features/LOGIN.md
   latest_worklog: docs/worklogs/login-feature-001__jb__20260930T121505Z.md
-  source_revision: f7ebd19a9ac4c291ce3897bb4306f8206b83f47c
-  updated_at: '2026-09-30T12:51:19Z'
+  source_revision: 95bf65f6a2ccf79a2cb9cc3a59a8a2b546d4a0c8
+  updated_at: '2026-10-01T07:05:52Z'
   missing_reasons:
     human_owner: 프로젝트 담당자로 등록된 사람 ID가 없음.
     acceptance_total: 로그인 UI 기준 13개만 포함. 로그인 API 연동의 완료 기준은 UNDECIDED.
+- feature_id: SIGNUP
+  name: 회원가입
+  summary_ko: '회원가입 UI: UI·프론트엔드 입력 검증 구현(아이디 30자, 버튼 활성 표시, 생년월일 단위, 클릭 시 이메일 형식 검증 포함), 브라우저 확인과 사용자 실제 키보드 확인으로 기준 11/21 충족, 명세·시안 불일치 결정과 좁은 화면 생년월일 잘림 해결 대기(IMPLEMENTING). 회원가입 API 연동: API 명세 미정으로 미착수(NOT_STARTED). 회원가입 기능 전체는 완료가 아니다.'
+  human_owner: null
+  actor_id: jb
+  implementation_status: IMPLEMENTING
+  work_status: WAITING_APPROVAL
+  acceptance_passed: 11
+  acceptance_total: 21
+  verification_status: PARTIAL
+  review_status: PENDING
+  integration_status: NOT_MERGED
+  deployment_status: NOT_DEPLOYED
+  feature_file: docs/features/SIGNUP.md
+  latest_worklog: docs/worklogs/signup-feature-001__jb__20261001T045008Z.md
+  source_revision: 95bf65f6a2ccf79a2cb9cc3a59a8a2b546d4a0c8
+  updated_at: '2026-10-01T07:16:07Z'
+  missing_reasons:
+    human_owner: 프로젝트 담당자로 등록된 사람 ID가 없음.
+    acceptance_total: 상세 명세 1~11, 요구사항 표 REG-01~11, 요청 스타일 조건에서 정리한 21개(API 의존 기준 포함). 사용자가 2026-10-01T07:03Z 답변으로 승인 유지.
 ```
 새 항목: 아래 필드를 feature_file에서 복사한다. 기억에 의존해 실제 상태를 다시 만들어 넣지 않는다.
 ```yaml

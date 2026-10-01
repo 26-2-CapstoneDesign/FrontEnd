@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [isKeepLogin, setIsKeepLogin] = useState(false);
@@ -69,7 +71,11 @@ export default function Login() {
             <button className="login-submit" type="submit">
               로그인
             </button>
-            <button className="login-signup" type="button">
+            <button
+              className="login-signup"
+              type="button"
+              onClick={() => navigate("/signup")}
+            >
               회원가입
             </button>
           </div>
