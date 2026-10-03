@@ -1,15 +1,51 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 
+const LOGIN_EMPTY = "아이디와 비밀번호를 입력해 주세요.";
+const LOGIN_REQUESTED = "로그인 요청이 처리되었습니다.";
+const REQUEST_FAILED = "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.";
+
+const LOGIN_ERROR_MESSAGES = {
+  400: "입력값을 다시 확인해 주세요.",
+  401: "아이디 또는 비밀번호가 올바르지 않습니다.",
+  429: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+};
+
 export default function Login() {
+  const navigate = useNavigate();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [isKeepLogin, setIsKeepLogin] = useState(false);
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    setMessage("로그인 서버가 아직 연결되지 않았습니다.");
+    if (isSubmitting) return;
+    if (userId.trim() === "" || password === "") {
+      setMessage(LOGIN_EMPTY);
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // AUTH-01의 성공 응답·인증 전달 방식이 정해지지 않아 응답 본문을 읽거나 인증 정보를 저장하지 않는다.
+      const response = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ loginName: userId, password }),
+      });
+      setMessage(
+        response.ok
+          ? LOGIN_REQUESTED
+          : (LOGIN_ERROR_MESSAGES[response.status] ?? REQUEST_FAILED),
+      );
+    } catch {
+      setMessage(REQUEST_FAILED);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -66,10 +102,18 @@ export default function Login() {
           </p>
 
           <div className="login-actions">
-            <button className="login-submit" type="submit">
+            <button
+              className="login-submit"
+              type="submit"
+              disabled={isSubmitting}
+            >
               로그인
             </button>
-            <button className="login-signup" type="button">
+            <button
+              className="login-signup"
+              type="button"
+              onClick={() => navigate("/signup")}
+            >
               회원가입
             </button>
           </div>

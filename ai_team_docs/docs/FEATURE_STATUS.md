@@ -14,24 +14,44 @@ inventory_status: UNVERIFIED
 features:
 - feature_id: LOGIN
   name: 로그인
-  summary_ko: '로그인 UI: UI 코드 구현 완료, 브라우저 검증 대기(IMPLEMENTING). 로그인 API 연동: API·인증 방식 미정으로 미착수(NOT_STARTED). 로그인 기능 전체는 완료가 아니다.'
+  summary_ko: '로그인 UI: UI 코드 구현(회원가입 버튼과 /signup 이동 포함), 회원가입 이동은 브라우저 확인됨, 입력 반영·비밀번호 가림·메시지 영역은 도구로 확인해 기준 8/13 충족, 체크박스·hover·좁은 화면·21자 입력은 검증 대기(IMPLEMENTING). 로그인 API 연동: AUTH-01 제안값으로 빈 값 검사·요청 전송·상태 코드별 문구 구현, 요청 전송은 브라우저 확인, 실제 서버 응답은 현재 검증 불가, 백엔드 주소·proxy·환경변수·인증 전달 방식은 보류(백엔드 구축 후 결정)(IMPLEMENTING). 로그인 기능 전체는 완료가 아니다.'
   human_owner: null
   actor_id: jb
   implementation_status: IMPLEMENTING
   work_status: BLOCKED
-  acceptance_passed: 5
+  acceptance_passed: 8
   acceptance_total: 13
   verification_status: PARTIAL
   review_status: PENDING
-  integration_status: NOT_MERGED
+  integration_status: PR_REVIEW
   deployment_status: NOT_DEPLOYED
   feature_file: docs/features/LOGIN.md
-  latest_worklog: docs/worklogs/login-feature-001__jb__20260930T121505Z.md
-  source_revision: f7ebd19a9ac4c291ce3897bb4306f8206b83f47c
-  updated_at: '2026-09-30T12:51:19Z'
+  latest_worklog: docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md
+  source_revision: b8a6a966a84cbebc431ddcd477ff41e4dfe5d012
+  updated_at: '2026-10-01T17:13:46Z'
   missing_reasons:
     human_owner: 프로젝트 담당자로 등록된 사람 ID가 없음.
-    acceptance_total: 로그인 UI 기준 13개만 포함. 로그인 API 연동의 완료 기준은 UNDECIDED.
+    acceptance_total: 로그인 UI 기준 13개만 포함(LOGIN-AC-05는 사용자 승인으로 AUTH-01 요청 기준으로 문구 변경, 분모 유지). 그 밖의 로그인 API 연동 완료 기준은 UNDECIDED.
+- feature_id: SIGNUP
+  name: 회원가입
+  summary_ko: '회원가입 UI: UI·프론트엔드 입력 검증 구현(아이디 30자, 버튼 활성 표시, 생년월일 단위, 클릭 시 이메일 형식 검증 포함), 브라우저 확인과 사용자 실제 키보드 확인으로 기준 11/21 충족, 명세·시안 불일치 결정과 좁은 화면 생년월일 잘림 해결 대기(IMPLEMENTING). 회원가입 API 연동: MEM-01 제안값으로 가입 요청 코드 추가(IMPLEMENTING), 회원가입 버튼이 중복 확인·이메일 인증 API 부재로 활성화되지 않아 화면 요청과 실제 서버 응답은 현재 검증 불가. 중복 확인·이메일 인증 API 연동과 백엔드 접근 방식은 보류(백엔드 구축 후 결정, NOT_STARTED). 회원가입 기능 전체는 완료가 아니다.'
+  human_owner: null
+  actor_id: jb
+  implementation_status: IMPLEMENTING
+  work_status: WAITING_APPROVAL
+  acceptance_passed: 11
+  acceptance_total: 21
+  verification_status: PARTIAL
+  review_status: PENDING
+  integration_status: PR_REVIEW
+  deployment_status: NOT_DEPLOYED
+  feature_file: docs/features/SIGNUP.md
+  latest_worklog: docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md
+  source_revision: b8a6a966a84cbebc431ddcd477ff41e4dfe5d012
+  updated_at: '2026-10-01T17:13:46Z'
+  missing_reasons:
+    human_owner: 프로젝트 담당자로 등록된 사람 ID가 없음.
+    acceptance_total: 상세 명세 1~11, 요구사항 표 REG-01~11, 요청 스타일 조건에서 정리한 21개(API 의존 기준 포함). 사용자가 2026-10-01T07:03Z 답변으로 승인 유지.
 ```
 새 항목: 아래 필드를 feature_file에서 복사한다. 기억에 의존해 실제 상태를 다시 만들어 넣지 않는다.
 ```yaml
