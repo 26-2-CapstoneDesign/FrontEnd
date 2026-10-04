@@ -268,7 +268,9 @@ export default function SignUp() {
               onChange={(event) => setPassword(event.target.value)}
             />
             <FieldMessage
-              message={{ text: PASSWORD_HINT, tone: passwordHintTone }}
+              message={
+                isPasswordValid ? null : { text: PASSWORD_HINT, tone: passwordHintTone }
+              }
             />
           </div>
 
