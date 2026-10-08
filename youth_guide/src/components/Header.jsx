@@ -1,27 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "../styles/Header.css";
-
-/*
- * 개발 서버(npm run dev)에서만 동작하는 임시 로그인 확인 스위치
- *   주소 뒤에 ?mockLogin=1 → 로그인 상태로 보기 (탭을 닫기 전까지 유지)
- *   주소 뒤에 ?mockLogin=0 → 로그아웃 상태로 되돌리기
- * TODO(로그인 연동): 인증 방식이 정해지면 실제 로그인 상태로 교체
- */
-const MOCK_USER = { displayName: "dkdlel123" };
-const MOCK_LOGIN_KEY = "mockLogin";
-
-function getMockCurrentUser() {
-  if (!import.meta.env.DEV) return null;
-  try {
-    const param = new URLSearchParams(window.location.search).get(MOCK_LOGIN_KEY);
-    if (param === "1") sessionStorage.setItem(MOCK_LOGIN_KEY, "1");
-    if (param === "0") sessionStorage.removeItem(MOCK_LOGIN_KEY);
-    return sessionStorage.getItem(MOCK_LOGIN_KEY) === "1" ? MOCK_USER : null;
-  } catch {
-    return null;
-  }
-}
 
 function SearchIcon() {
   return (
@@ -108,30 +87,16 @@ function ProfileMenu({ user, onLogout }) {
   );
 }
 
-export default function Header({ isMinimal = false }) {
-  const navigate = useNavigate();
+export default function Header({ isMinimal = false, currentUser = null, onLogout }) {
   const [keyword, setKeyword] = useState("");
-  const [currentUser, setCurrentUser] = useState(getMockCurrentUser);
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
     const trimmedKeyword = keyword.trim();
     if (!trimmedKeyword) return;
-    // TODO(자격증 검색): 검색 결과 화면 라우트가 정해지면 해당 경로로 이동한다.
   };
 
-  const handleLogout = () => {
-    // TODO(로그인 연동): 로그아웃 API 연결 후 상태 초기화
-    try {
-      sessionStorage.removeItem(MOCK_LOGIN_KEY);
-    } catch {
-      // 저장소 접근 불가 시 무시
-    }
-    setCurrentUser(null);
-    navigate("/");
-  };
 
-  // 로그인·회원가입 화면: 시안대로 로고만 표시
   if (isMinimal) {
     return (
       <header className="header">
@@ -184,7 +149,7 @@ export default function Header({ isMinimal = false }) {
                 <BellIcon />
                 <span className="header-badge" aria-hidden="true" />
               </button>
-              <ProfileMenu user={currentUser} onLogout={handleLogout} />
+              <ProfileMenu user={currentUser} onLogout={onLogout} />
             </>
           ) : (
             <Link to="/login" className="header-login-button">
