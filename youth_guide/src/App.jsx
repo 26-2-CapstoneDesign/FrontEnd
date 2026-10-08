@@ -4,6 +4,7 @@ import AuthLayout from "./components/AuthLayout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import CertificationList from "./pages/CertificationList";
 import CertificationDetail from "./pages/CertificationDetail";
 import ReviewList from "./pages/ReviewList";
 import ReviewWrite from "./pages/ReviewWrite";
@@ -33,6 +34,7 @@ export default function App() {
         </Route>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/certifications" element={<CertificationList />} />
           <Route path="/certifications/:certId" element={<CertificationDetail />} />
           <Route path="/reviews" element={<ReviewList />} />
           <Route path="/reviews/new" element={<ReviewWrite />} />
