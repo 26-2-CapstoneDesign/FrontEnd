@@ -1,20 +1,15 @@
 import { useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
+import { CERTIFICATIONS, RECOMMENDED_CERT_IDS } from "../data/certifications";
 import "../styles/Home.css";
+
+const RECOMMENDED_CERTS = RECOMMENDED_CERT_IDS.map((id) =>
+  CERTIFICATIONS.find((cert) => cert.id === id),
+);
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 // 주마다 일정 줄을 이만큼 항상 확보해 일정 유무와 상관없이 행 높이를 같게 유지한다.
 const MAX_EVENT_LANES = 2;
-
-// TODO(자격증 API 연동): 추천 자격증 목록을 서버 데이터로 교체
-const RECOMMENDED_CERTS = [
-  { id: "linux-master", name: "리눅스마스터", category: "민간자격" },
-  { id: "engineer-information-processing", name: "정보처리기사", category: "국가기술자격" },
-  { id: "sqld", name: "SQLD", category: "국가전문자격" },
-  { id: "computer-skills", name: "컴퓨터활용능력", category: "국가기술자격" },
-  { id: "toeic", name: "토익", category: "어학" },
-  { id: "electrical-engineer", name: "전기기사", category: "국가기술자격" },
-];
 
 // TODO(캘린더 API 연동): 로그인한 사용자의 등록 일정으로 교체. 지금은 오늘 기준 임시 데이터.
 function getMockEvents(today) {
