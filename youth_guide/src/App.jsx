@@ -8,6 +8,7 @@ import CertificationDetail from "./pages/CertificationDetail";
 import ReviewList from "./pages/ReviewList";
 import ReviewWrite from "./pages/ReviewWrite";
 import ReviewDetail from "./pages/ReviewDetail";
+import MyPage from "./pages/MyPage";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/reviews" element={<ReviewList />} />
           <Route path="/reviews/new" element={<ReviewWrite />} />
           <Route path="/reviews/:reviewId" element={<ReviewDetail />} />
+          <Route path="/mypage" element={<MyPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
