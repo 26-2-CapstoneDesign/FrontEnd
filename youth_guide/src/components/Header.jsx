@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import "../styles/Header.css";
 
 function SearchIcon() {
@@ -88,12 +88,15 @@ function ProfileMenu({ user, onLogout }) {
 }
 
 export default function Header({ isMinimal = false, currentUser = null, onLogout }) {
-  const [keyword, setKeyword] = useState("");
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [keyword, setKeyword] = useState(() => searchParams.get("q") ?? "");
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
     const trimmedKeyword = keyword.trim();
     if (!trimmedKeyword) return;
+    navigate(`/certifications?q=${encodeURIComponent(trimmedKeyword)}`);
   };
 
 
