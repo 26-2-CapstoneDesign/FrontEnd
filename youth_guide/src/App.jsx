@@ -8,6 +8,10 @@ import ReviewList from "./pages/ReviewList";
 import ReviewWrite from "./pages/ReviewWrite";
 import ReviewDetail from "./pages/ReviewDetail";
 import FirstLogin from "./pages/FirstLogin";
+import FindId from "./pages/FindId";
+import FindIdComplete from "./pages/FindIdComplete";
+import FindPassword from "./pages/FindPassword";
+import FindPasswordComplete from "./pages/FindPasswordComplete";
 
 export default function App() {
   return (
@@ -16,6 +20,10 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/find-id" element={<FindId />} />
+          <Route path="/find-id/complete" element={<FindIdComplete />} />
+          <Route path="/find-password" element={<FindPassword />} />
+          <Route path="/find-password/complete" element={<FindPasswordComplete />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/certifications/:certId" element={<CertificationDetail />} />
           <Route path="/reviews" element={<ReviewList />} />
