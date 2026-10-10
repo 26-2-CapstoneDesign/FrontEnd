@@ -6,6 +6,8 @@ const INTEREST_PAGE_SIZE = 3;
 const SEARCH_MAX_LENGTH = 100;
 
 // 아래 mock 값은 화면 동작 확인용 가상 데이터이며 실제 NCS 분류나 자격증 데이터가 아니다.
+// 상태: Mock 데이터 사용. API가 연결되기 전까지 화면 확인용으로 유지한다.
+// 닉네임 조회 API는 명세에 없다(API 명세 미정).
 const MOCK_NICKNAME = "사용자";
 const MOCK_NCS_RELEASE_ID = "mock-release";
 
@@ -32,6 +34,7 @@ const MOCK_CERTIFICATES = [
   { certificateId: "mock-12", displayName: "샘플 자격증 12", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-d" },
 ];
 
+// 관심 자격증 조회·추천 자격증 API는 명세에 없다(API 명세 미정).
 const MOCK_INTEREST_IDS = ["mock-01", "mock-03", "mock-05", "mock-07", "mock-08", "mock-10", "mock-11"];
 const MOCK_RECOMMENDED_IDS = ["mock-02", "mock-03", "mock-04", "mock-06", "mock-09", "mock-12"];
 
@@ -42,6 +45,51 @@ const CATEGORY_NAME_BY_ID = Object.fromEntries(
   MOCK_NCS_CATEGORIES.map((category) => [category.ncsCategoryId, category.name]),
 );
 const MOCK_RECOMMENDED_CERTIFICATES = MOCK_RECOMMENDED_IDS.map((id) => CERTIFICATE_BY_ID[id]);
+
+/* eslint-disable no-unused-vars */
+
+// CERT-01·NCS-01·NCS-02는 API 명세의 제안 URL·파라미터·응답 구조({ data: { items, page, size, hasNext } })를 따른다.
+// 상태: API 연결 준비. 백엔드 구현 대기라 화면에서는 아직 호출하지 않고 mock 데이터를 쓴다.
+const getPage = async (path, params) => {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") query.append(key, value);
+  });
+  const queryString = query.toString();
+  const response = await fetch(queryString ? `${path}?${queryString}` : path);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const { data } = await response.json();
+  return data;
+};
+
+// CERT-01 자격증 목록·검색. NCS 필터는 ncsReleaseId·ncsCategoryId를 함께 전달한다.
+const searchCertificates = ({ q, ncsReleaseId, ncsCategoryId, page, size } = {}) =>
+  getPage("/api/v1/certificates", { q, ncsReleaseId, ncsCategoryId, page, size });
+
+// NCS-01 NCS 기준 자료 목록
+const getNcsReleases = ({ page, size } = {}) =>
+  getPage("/api/v1/ncs/releases", { page, size });
+
+// NCS-02 NCS 하위 분류 조회. parentCategoryId가 없으면 루트 분류를 조회한다.
+const getNcsCategories = (ncsReleaseId, { parentCategoryId, page, size } = {}) =>
+  getPage(`/api/v1/ncs/releases/${encodeURIComponent(ncsReleaseId)}/categories`, {
+    parentCategoryId,
+    page,
+    size,
+  });
+
+// 아래 기능의 API는 명세에 없어 URL·요청 필드·응답 구조·인증 방식을 정할 수 없다.
+// 상태: API 명세 미정(백엔드 API 필요). 명세가 확정되면 구현하고, 그 전까지 화면은 mock 데이터를 쓴다.
+// 인자는 화면 상태 값이며 API 요청 필드 이름이 아니다.
+const getInterestCertificates = async () => {};
+const saveInterestCertificates = async (certificateIds) => {};
+const getAcquiredCertificates = async () => {};
+const saveAcquiredCertificate = async ({ certificateId, acquiredDate }) => {};
+const getRecommendedCertificates = async () => {};
+const getFirstLoginStatus = async () => {};
+const getNickname = async () => {};
+
+/* eslint-enable no-unused-vars */
 
 const SEARCH_EMPTY = "검색어를 입력해 주세요.";
 const LIST_EMPTY = "조건에 맞는 자격증이 없습니다.";
@@ -103,6 +151,7 @@ export default function FirstLogin() {
   const [searchMessage, setSearchMessage] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [completeMessage, setCompleteMessage] = useState("");
+  // 취득 자격증 조회 API가 명세에 없어(API 명세 미정) 빈 목록에서 시작한다.
   const [acquiredList, setAcquiredList] = useState([]);
   const [isAcquiredFormOpen, setIsAcquiredFormOpen] = useState(false);
   const [acquiredQuery, setAcquiredQuery] = useState("");
@@ -174,7 +223,7 @@ export default function FirstLogin() {
     setAcquiredMessage("");
   };
 
-  const handleAcquiredRegister = () => {
+  const handleAcquiredRegister = async () => {
     if (!selectedAcquiredId) {
       setAcquiredMessage(ACQUIRED_SELECT_REQUIRED);
       return;
@@ -191,6 +240,7 @@ export default function FirstLogin() {
       setAcquiredMessage(ACQUIRED_DATE_FUTURE);
       return;
     }
+    await saveAcquiredCertificate({ certificateId: selectedAcquiredId, acquiredDate });
     setAcquiredList((prev) => [...prev, { certificateId: selectedAcquiredId, acquiredDate }]);
     setCompleteMessage("");
     closeAcquiredForm();
@@ -201,7 +251,8 @@ export default function FirstLogin() {
     setCompleteMessage("");
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
+    await saveInterestCertificates(interestIds);
     setCompleteMessage(
       `관심 자격증 ${interests.length}개, 취득한 자격증 ${acquiredList.length}개로 선택을 완료했습니다. 서버 저장은 아직 연결되지 않았습니다.`,
     );

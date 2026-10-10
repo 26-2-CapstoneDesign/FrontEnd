@@ -9,11 +9,13 @@ import ReviewList from "./pages/ReviewList";
 import ReviewWrite from "./pages/ReviewWrite";
 import ReviewDetail from "./pages/ReviewDetail";
 import FirstLogin from "./pages/FirstLogin";
+import ChangeId from "./pages/ChangeId";
+import ChangePassword from "./pages/ChangePassword";
+import SignUpComplete from "./pages/SignUpComplete";
 import FindId from "./pages/FindId";
 import FindIdComplete from "./pages/FindIdComplete";
 import FindPassword from "./pages/FindPassword";
 import FindPasswordComplete from "./pages/FindPasswordComplete";
-
 import MyPage from "./pages/MyPage";
 
 export default function App() {
@@ -27,6 +29,7 @@ export default function App() {
           <Route path="/find-password" element={<FindPassword />} />
           <Route path="/find-password/complete" element={<FindPasswordComplete />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/signup/complete" element={<SignUpComplete />} />
         </Route>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
@@ -39,6 +42,10 @@ export default function App() {
             <Route path="/onboarding/certifications" element={<FirstLogin />} />
           )}
           <Route path="/mypage" element={<MyPage />} />
+          {import.meta.env.DEV && (
+            <Route path="/change-id" element={<ChangeId />} />
+          )}
+          {import.meta.env.DEV && <Route path="/change-password" element={<ChangePassword />} />}
         </Route>
       </Routes>
     </BrowserRouter>

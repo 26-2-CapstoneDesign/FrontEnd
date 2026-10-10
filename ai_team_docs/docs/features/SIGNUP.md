@@ -4,7 +4,7 @@
 schema_version: 3.1.0
 template: false
 record_type: feature
-summary_ko: 회원가입 화면 UI와 프론트엔드 입력 검증은 SignUp.jsx·SignUp.css에 구현했고 IMPLEMENTING 상태다. 사용자 요청으로 아이디 최대 30자, 아이디 중복확인·인증번호 발송 버튼의 입력 여부에 따른 활성 표시, 생년월일 년·월·일 단위 표시, 버튼 클릭 시 이메일 형식 검증을 추가했다. 브라우저에서 비밀번호·약관 동작과 로그인 화면에서의 이동을 확인하고, 사용자가 실제 키보드로 Backspace 삭제 시 버튼 비활성 복귀와 비밀번호 20자 초과 입력 차단을 확인해 완료 기준 21개 중 11개가 충족됐고, 좁은 화면에서 생년월일 연도가 잘리는 문제가 발견됐다. 명세·시안 불일치 항목의 사람 결정과 일부 확인이 남아 있다. 가입 처리는 API 명세 MEM-01의 제안값(POST /api/v1/members, loginName·nickname·email·password)으로 요청 코드를 추가했다(IMPLEMENTING, member-auth-api-001). 다만 회원가입 버튼이 중복 확인·이메일 인증 완료를 요구하고 해당 API가 없어 화면에서 요청을 보낼 수 없고, 백엔드 미구축으로 실제 통신은 현재 검증 불가다. 중복 확인·이메일 인증 API 연동과 백엔드 주소·proxy·환경변수 방식은 백엔드 구축 후 결정하도록 보류했다(NOT_STARTED). 회원가입 기능 전체는 완료가 아니다.
+summary_ko: 회원가입 화면 UI와 프론트엔드 입력 검증은 SignUp.jsx·SignUp.css에 구현했고 IMPLEMENTING 상태다. 사용자 요청으로 아이디 최대 30자, 아이디 중복확인·인증번호 발송 버튼의 입력 여부에 따른 활성 표시, 생년월일 년·월·일 단위 표시, 버튼 클릭 시 이메일 형식 검증을 추가했다. 브라우저에서 비밀번호·약관 동작과 로그인 화면에서의 이동을 확인하고, 사용자가 실제 키보드로 Backspace 삭제 시 버튼 비활성 복귀와 비밀번호 20자 초과 입력 차단을 확인해 완료 기준 21개 중 11개가 충족됐고, 좁은 화면에서 생년월일 연도가 잘리는 문제가 발견됐다. 명세·시안 불일치 항목의 사람 결정과 일부 확인이 남아 있다. 가입 처리는 API 명세 MEM-01의 제안값(POST /api/v1/members, loginName·nickname·email·password)으로 요청 코드를 추가했다(IMPLEMENTING, member-auth-api-001). 다만 회원가입 버튼이 중복 확인·이메일 인증 완료를 요구하고 해당 API가 없어 화면에서 요청을 보낼 수 없고, 백엔드 미구축으로 실제 통신은 현재 검증 불가다. 중복 확인·이메일 인증 API 연동과 백엔드 주소·proxy·환경변수 방식은 백엔드 구축 후 결정하도록 보류했다(NOT_STARTED). 2026-10-08 사용자 요청으로 회원가입 완료 화면(SignUpComplete.jsx·SignUpComplete.css, /signup/complete)을 추가하고, MEM-01 응답이 response.ok일 때의 이동 경로를 /login에서 완료 화면으로 바꿨다(signup-complete-001, 프론트엔드 화면·이동만 추가). 완료 화면의 "로그인 화면으로 이동" 버튼은 /login으로 이동한다. 실제 성공·실패 응답에 따른 이동은 같은 이유로 현재 검증 불가이며, SIGNUP-AC-19 문구와의 관계는 사람 확인 대기다. 회원가입 기능 전체는 완료가 아니다.
 feature_id: SIGNUP
 name: 회원가입
 human_owner: null
@@ -28,10 +28,11 @@ approval_refs:
 - 'EXPLICIT_REQUEST@2026-10-01T16:51Z: 현재 대화의 사용자 요청 - SignUp.jsx에 MEM-01(POST /api/v1/members, loginName·nickname·email·password) 요청 추가, 이름·성별·생년월일 등은 요청에 넣지 않음, 성공 응답 구조 추측·자동 로그인 금지'
 - 'EXPLICIT_REQUEST(2026-10-01T16:51Z 이후 16:59:19Z 이전): 현재 대화의 사용자 답변 - 기존 검증 유지(화면에서 요청 불가 상태로 기록), 상대 경로 사용, 성공 시 /login 이동(REG-10), 제안 오류 문구 사용, SIGNUP-AC-18 문구 수정 승인(분모 유지)'
 - 'EXPLICIT_REQUEST@2026-10-01T17:13Z: 현재 대화의 사용자 요청 - 백엔드 주소·Vite proxy·환경변수·인증 방식은 백엔드 구축 후 결정으로 보류, 중복확인·이메일 인증 API 임의 생성 금지, 검증 불가 부분은 "현재 검증 불가"로 기록'
-updated_at: '2026-10-01T17:13:46Z'
-source_revision: b8a6a966a84cbebc431ddcd477ff41e4dfe5d012
+- 'EXPLICIT_REQUEST@2026-10-08T16:18Z: 현재 대화의 사용자 요청 - 회원가입 완료 화면(SignUpComplete.jsx·SignUpComplete.css) 추가, 회원가입 API 성공 시에만 완료 화면 이동·실패 시 이동 금지, 완료 화면 버튼으로 /login 이동, 기존 SignUp 기능·API 코드·오류 처리 유지, App.jsx import 1줄·Route 1줄(signup-complete-001)'
+updated_at: '2026-10-08T17:10:01Z'
+source_revision: 8e139b480b6c72b00e43a4fdb72f9f2be73fb682
 feature_file: docs/features/SIGNUP.md
-latest_worklog: docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md
+latest_worklog: docs/worklogs/signup-complete-001__jb__20261008T161951Z.md
 implementation_status: IMPLEMENTING
 work_status: WAITING_APPROVAL
 acceptance_passed: 11
@@ -54,19 +55,26 @@ scope:
 - '회원가입 UI: 아이디 중복확인 버튼과 인증번호 발송 버튼은 입력이 비어 있으면(공백만 입력 포함) 비활성·연한 색상, 1자 이상이면 진한 색상(is-primary)으로 표시하고, 다시 모두 지우면 비활성으로 돌아간다.'
 - '회원가입 UI: 생년월일 각 선택창 오른쪽에 년·월·일 단위를 항상 표시한다. 선택창 placeholder(년도·월·일)와 월·일 숫자 표기는 유지한다.'
 - '회원가입 UI: 스타일은 youth_guide/src/styles/SignUp.css에 작성하고 SignUp.jsx에서 import'
-- '회원가입 API 연동(가입 처리): 기존 isSubmittable 검사를 통과하면 POST /api/v1/members(MEM-01, 상대 경로)에 Content-Type application/json, Body {loginName, nickname, email, password}를 보낸다. 2xx면 /login으로 이동, 400 "입력값을 다시 확인해 주세요.", 409 "이미 사용 중인 아이디, 닉네임 또는 이메일입니다.", 그 외 상태·연결 실패 "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요."를 회원가입 버튼 위에 표시한다. 응답 본문은 읽지 않는다.'
+- '회원가입 API 연동(가입 처리): 기존 isSubmittable 검사를 통과하면 POST /api/v1/members(MEM-01, 상대 경로)에 Content-Type application/json, Body {loginName, nickname, email, password}를 보낸다. 2xx(response.ok)면 회원가입 완료 화면(/signup/complete)으로 이동(2026-10-08 이전에는 /login), 400 "입력값을 다시 확인해 주세요.", 409 "이미 사용 중인 아이디, 닉네임 또는 이메일입니다.", 그 외 상태·연결 실패 "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요."를 회원가입 버튼 위에 표시한다. 응답 본문은 읽지 않는다.'
 - '회원가입 API 연동(아이디·닉네임 중복 확인, 이메일 중복 검사·인증번호 발송·확인): 범위·방식 UNDECIDED'
+- '회원가입 완료 화면(signup-complete-001): youth_guide/src/pages/SignUpComplete.jsx·youth_guide/src/styles/SignUpComplete.css, 경로 /signup/complete(App.jsx Route, 개발 서버 전용 조건 없음). 화면에는 기존 Layout.jsx 상단 네비게이션 바와 완료 창만 있다(2026-10-08T17:09Z 요청으로 별도 "청년 길잡이" 헤더 제거, signup-complete-001 E007). 밝은 회색 배경 가운데 흰색 둥근 카드, 파란 체크 아이콘, 제목 "회원가입이 완료되었습니다.", 안내 "로그인을 진행하여 서비스를 이용해주세요.", "로그인 화면으로 이동" 버튼(navigate("/login")). 회원가입 API 성공 후 이동하는 프론트엔드 화면이며 API를 호출하지 않는다.'
 excluded_scope:
 - 중복 확인·이메일 인증 API 호출, 백엔드 API 생성, 명세에 없는 API 필드·응답값 정의
 - 이름·성별·생년월일·약관 동의를 MEM-01 요청에 포함(Request Body에 없음)
-- 회원가입 성공 후 자동 로그인(MEM-01 가입 완료는 이메일 인증 완료·자동 로그인을 의미하지 않음)
+- 회원가입 성공 후 자동 로그인(MEM-01 가입 완료는 이메일 인증 완료·자동 로그인을 의미하지 않음). 완료 화면도 토큰·세션·자동 로그인 처리를 하지 않는다
 - 새로운 라이브러리·dependency 추가
 - Login.jsx·Login.css·다른 페이지 수정(회원가입 작업 범위)
 dependency_refs:
 - youth_guide/src/App.jsx의 Route path="/signup"(기존 라우팅, 수정하지 않음)
 - youth_guide/src/components/Layout.jsx의 Outlet과 Link to="/signup"(기존 레이아웃, 수정하지 않음)
 - youth_guide/src/pages/Login.jsx의 회원가입 버튼 navigate("/signup")(login-feature-001, 브라우저 클릭 이동 확인 E029)
+- youth_guide/src/App.jsx의 Route path="/signup/complete"(signup-complete-001에서 추가)
+- youth_guide/src/pages/Login.jsx(완료 화면 버튼의 이동 대상 "/login", 수정하지 않음)
 unknowns:
+- 'SIGNUP-AC-19 문구("로그인 화면으로 이동한다")를 새 흐름(성공 → 완료 화면 → 버튼 → /login)에 맞게 고칠지, 완료 화면 UI 기준을 추가할지: UNDECIDED - 사람 승인 필요(C07·C21, signup-complete-001 E004)'
+- '완료 화면 직접 접근: 2026-10-08T17:04Z 사용자 답변으로 개발 중 확인은 기존 /signup/complete 직접 접속을 사용하고 현재 동작(그대로 표시)을 유지한다(signup-complete-001 E006). 운영에서 직접 접근을 막을지: UNDECIDED'
+- '완료 화면과 첨부 시안의 일치 여부: UNVERIFIED - 작업자가 첨부 이미지를 확인하지 못해 요청 문장 기준으로 구현, 사람 판단 필요'
+- '완료 화면 헤더: 2026-10-08T17:09Z 사용자 요청으로 별도 헤더를 제거하고 Layout.jsx 네비게이션 바만 사용한다(signup-complete-001 E007). 공통 헤더 도입 방식: UNDECIDED'
 - '아이디·닉네임 중복 확인, 이메일 인증 API의 엔드포인트·요청·응답 구조: UNDECIDED - 보류(백엔드 구축 후 결정), 임의 생성 금지(2026-10-01T17:13Z 사용자 지시)'
 - '회원가입 API 계약: API 명세 MEM-01의 URL·Request 필드는 제안(PROPOSED)이고 백엔드 구현 상태는 NOT_IMPLEMENTED다(사용자 메시지 발췌, 저장소에 명세 문서 없음). 성공 응답 구조와 오류 응답 본문 구조: UNDECIDED. 409가 아이디·닉네임·이메일 중 무엇의 충돌인지 구분할 방법: UNDECIDED. 모두 보류(백엔드 구축 후 결정)'
 - '백엔드 주소·Vite proxy·환경변수 방식: UNDECIDED - 보류(백엔드 구축 후 결정). 임의 주소·proxy·환경변수 추가 금지(2026-10-01T17:13Z 사용자 지시). 현재 코드는 명세 endpoint 상대 경로만 사용'
@@ -201,7 +209,7 @@ acceptance_criteria:
   condition: 회원가입 성공(REG-10)
   expected: 로그인 화면으로 이동한다.
   status: UNVERIFIED
-  evidence_refs: ['docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md#E002 코드상 MEM-01 응답 response.ok면 navigate("/login")', '가입 요청을 화면에서 보낼 수 없고 백엔드가 NOT_IMPLEMENTED라 실제 이동 미확인']
+  evidence_refs: ['docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md#E002 코드상 MEM-01 응답 response.ok면 navigate("/login")', '가입 요청을 화면에서 보낼 수 없고 백엔드가 NOT_IMPLEMENTED라 실제 이동 미확인', 'docs/worklogs/signup-complete-001__jb__20261008T161951Z.md#E002 2026-10-08 사용자 요청으로 response.ok면 navigate("/signup/complete"), 완료 화면 버튼 클릭 시 /login(E003 브라우저 확인). 기준 문구와의 관계는 사람 확인 대기(E004), 성공 응답에 따른 이동은 현재 검증 불가']
   source_revision: b8a6a966a84cbebc431ddcd477ff41e4dfe5d012
 - ac_id: SIGNUP-AC-20
   condition: /signup 화면 표시(요청 "첨부한 디자인과 동일한 형태")
@@ -234,14 +242,30 @@ components:
   - SIGNUP-AC-20 사람 판단
   task_refs: [signup-feature-001]
 - path: youth_guide/src/pages/SignUp.jsx
-  symbol: handleSubmit / fetch("/api/v1/members") / SIGNUP_ERROR_MESSAGES / isSubmitting / navigate("/login")
-  role: '회원가입 API 연동(가입 처리): MEM-01 요청 전송, HTTP 상태 코드별 문구 표시, 성공 시 로그인 화면 이동'
+  symbol: handleSubmit / fetch("/api/v1/members") / SIGNUP_ERROR_MESSAGES / isSubmitting / navigate("/signup/complete")
+  role: '회원가입 API 연동(가입 처리): MEM-01 요청 전송, HTTP 상태 코드별 문구 표시, 성공 시 회원가입 완료 화면 이동'
   implementation_status: IMPLEMENTING
   remaining_work:
   - 화면에서 요청 전송 확인(회원가입 버튼 활성화에 중복 확인·이메일 인증 API 필요)
   - 실제 백엔드 응답 확인(현재 검증 불가, 보류)
   - 백엔드 주소·Vite proxy·환경변수 방식(보류, 백엔드 구축 후 결정)
-  task_refs: [member-auth-api-001]
+  task_refs: [member-auth-api-001, signup-complete-001]
+- path: youth_guide/src/pages/SignUpComplete.jsx
+  symbol: SignUpComplete
+  role: '회원가입 완료 화면: 완료 카드(체크 아이콘·제목·안내 문구), "로그인 화면으로 이동" 버튼(navigate("/login")). 상단은 Layout 네비게이션 바만 사용, API 호출 없음'
+  implementation_status: IMPLEMENTING
+  remaining_work:
+  - SIGNUP-AC-19·완료 화면 기준 처리 결정
+  - 직접 접근 처리 여부 결정
+  - 첨부 시안과의 비교(사람 판단)
+  task_refs: [signup-complete-001]
+- path: youth_guide/src/styles/SignUpComplete.css
+  symbol: .signup-complete-*
+  role: 회원가입 완료 화면 전용 스타일(480px 이하 반응형 포함)
+  implementation_status: IMPLEMENTING
+  remaining_work:
+  - hover·focus 확인, 첨부 시안과의 비교(사람 판단)
+  task_refs: [signup-complete-001]
 - path: null
   symbol: null
   role: '회원가입 API 연동: 아이디·닉네임 중복 확인, 이메일 인증'
@@ -280,7 +304,25 @@ connections:
   contract_ref: 'API 명세 MEM-01(사용자 메시지 발췌, URL·필드 PROPOSED, 백엔드 NOT_IMPLEMENTED)'
   purpose: 가입 요청을 보내고 응답 HTTP 상태 코드로 이동·문구를 정한다. 응답 본문은 읽지 않는다.
   verification_evidence: ['docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md#E002 lint·build 통과와 코드 확인만 함. 화면에서 요청 전송·응답은 미확인']
-verified_flow: /login 회원가입 버튼 클릭 → /signup 이동 → SignUp 렌더링 → SignUp.css 적용 → 모든 입력 항목·버튼 표시와 회원가입 버튼 비활성, 아이디·이메일 입력에 따른 버튼 활성 변화, 비밀번호 규칙·확인 문구, 약관 전체·개별 동의와 필수 약관 안내, 이메일 형식 검사 문구, 데스크톱 폭 생년월일 단위 표시까지 브라우저에서 확인했다. MEM-01 요청 코드 추가 후에도 기존 화면과 회원가입 버튼 비활성을 확인했다(member-auth-api-001 E002). 좁은 화면 표시는 연도 잘림 문제가 있고, 회원가입 버튼 활성화와 MEM-01 요청·응답 흐름은 확인하지 않았다.
+- from: {path: youth_guide/src/pages/SignUp.jsx, symbol: 'handleSubmit navigate("/signup/complete") (response.ok)'}
+  to: {path: youth_guide/src/pages/SignUpComplete.jsx, symbol: SignUpComplete, external_boundary: null}
+  payload: 없음(경로 이동)
+  contract_ref: 'App.jsx Route path="/signup/complete"'
+  purpose: 회원가입 API 성공 시 완료 화면으로 이동한다.
+  verification_evidence: ['코드 확인(signup-complete-001 E002)', '회원가입 버튼이 활성화될 수 없고 백엔드가 없어 화면에서 미실행(현재 검증 불가)']
+- from: {path: youth_guide/src/App.jsx, symbol: 'Route path="/signup/complete"'}
+  to: {path: youth_guide/src/pages/SignUpComplete.jsx, symbol: SignUpComplete, external_boundary: null}
+  payload: 없음(props 없음)
+  contract_ref: 기존 react-router-dom 라우팅(Layout 하위)
+  purpose: /signup/complete 경로에서 완료 화면을 렌더링한다.
+  verification_evidence: ['docs/worklogs/signup-complete-001__jb__20261008T161951Z.md#E003 데스크톱·360px 표시']
+- from: {path: youth_guide/src/pages/SignUpComplete.jsx, symbol: 'button onClick navigate("/login")'}
+  to: {path: youth_guide/src/pages/Login.jsx, symbol: Login, external_boundary: null}
+  payload: 없음(경로 이동)
+  contract_ref: 기존 라우팅(App.jsx Route path="/login")
+  purpose: 완료 화면에서 로그인 화면으로 이동한다.
+  verification_evidence: ['docs/worklogs/signup-complete-001__jb__20261008T161951Z.md#E003 클릭 후 /login, 로그인 제목 표시']
+verified_flow: /login 회원가입 버튼 클릭 → /signup 이동 → SignUp 렌더링 → SignUp.css 적용 → 모든 입력 항목·버튼 표시와 회원가입 버튼 비활성, 아이디·이메일 입력에 따른 버튼 활성 변화, 비밀번호 규칙·확인 문구, 약관 전체·개별 동의와 필수 약관 안내, 이메일 형식 검사 문구, 데스크톱 폭 생년월일 단위 표시까지 브라우저에서 확인했다. MEM-01 요청 코드 추가 후에도 기존 화면과 회원가입 버튼 비활성을 확인했다(member-auth-api-001 E002). 좁은 화면 표시는 연도 잘림 문제가 있고, 회원가입 버튼 활성화와 MEM-01 요청·응답 흐름은 확인하지 않았다. 2026-10-08 완료 화면 추가 후 /signup 기존 검증 문구와 회원가입 버튼 비활성(요청 0건), /signup/complete 표시(데스크톱·360px), 완료 화면 버튼 클릭 시 /login 이동을 확인했다(signup-complete-001 E003). 회원가입 성공 응답 → 완료 화면 이동은 화면에서 실행하지 못했다.
 verification_scope: MIXED
 required_checks:
 - npm run lint
@@ -298,6 +340,7 @@ check_evidence:
 - '인증번호 발송 버튼 활성 표시: 빈칸이면 비활성·연한 색, "a" 입력 시 진한 남색, 다시 비우면 비활성 복귀 확인 (signup-email-validation-001 worklog E012)'
 - '로그인 → 회원가입 이동: 로그인 폼의 회원가입 버튼 클릭 시 /signup 이동 확인 (login-feature-001 worklog E029)'
 - 'MEM-01 요청(member-auth-api-001): lint 진단 없음 LINT_EXIT=0, vite build 성공, /signup 기존 화면·회원가입 버튼 disabled 확인. 화면에서 요청 전송과 실제 백엔드 통신은 미확인 (worklog member-auth-api-001 E002)'
+- '회원가입 완료 화면(signup-complete-001 E003): npm run lint LINT_EXIT=0, vite build 성공. /signup 기존 검증 문구(비밀번호 규칙·확인 불일치·이메일 형식·필수 약관)와 회원가입 버튼 disabled·fetch/XHR 0건, /signup/complete 데스크톱·360px 표시(가로 스크롤 없음), "로그인 화면으로 이동" 클릭 시 /login. 스크립트 입력으로 확인했고 실제 회원가입 API 성공·실패 응답은 현재 검증 불가'
 exception_coverage:
 - 아이디·닉네임 중복 확인 버튼, 인증번호 발송 버튼, 인증번호 확인 버튼은 입력이 비어 있으면(공백만 입력 포함) 비활성이다.
 - 인증번호 발송 버튼은 클릭 시 이메일 형식을 검사하고, 잘못된 형식이면 "이메일 형식이 올바르지 않습니다."를 표시한다. 빈칸에서는 버튼이 비활성이라 클릭할 수 없다.
@@ -305,12 +348,15 @@ exception_coverage:
 - 연·월을 바꿔 선택한 일이 그 달의 일 수를 넘으면 일 선택을 비운다.
 - 중복 확인·이메일 인증은 백엔드가 없어 확인 결과(성공·실패)를 만들지 않고 서버 미연결 안내만 표시한다.
 - 가입 요청(MEM-01)은 400·409면 상태별 문구, 그 밖의 상태 코드와 네트워크 오류면 "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요."를 표시하고, 요청 중에는 회원가입 버튼을 비활성화한다.
+- 가입 요청이 2xx가 아니거나 연결에 실패하면 완료 화면으로 이동하지 않고 기존 문구를 표시한다(response.ok일 때만 /signup/complete 이동).
 blockers:
 - '회원가입 UI: 명세·시안 불일치와 미정 항목의 사람 결정 대기(worklog E009, APPROVAL_GAP)'
 - '회원가입 UI: 좁은 화면 생년월일 연도 잘림의 해결 방식 결정 대기(worklog E013)'
 - '회원가입 API 연동: 보류(백엔드 구축 후 결정) - 중복 확인·이메일 인증 API가 없어 회원가입 버튼을 활성화할 수 없고, MEM-01 요청을 화면에서 보낼 수 없음(현재 검증 불가)'
 - '회원가입 API 연동: 보류(백엔드 구축 후 결정) - 백엔드 미구축으로 실제 응답 현재 검증 불가, 백엔드 주소·Vite proxy·환경변수 방식 미정(member-auth-api-001 E004 STOP)'
+- '회원가입 완료 화면: SIGNUP-AC-19 문구 수정·완료 화면 기준 추가 여부 사람 승인 대기(signup-complete-001 E004, APPROVAL_GAP)'
 resume_when:
+- 사용자가 SIGNUP-AC-19와 완료 화면 기준 처리 방식을 알려줄 때
 - 사용자가 worklog E009의 결정 요청에 답할 때
 - 사용자가 생년월일 좁은 화면 표시의 해결 방식을 정할 때
 - 중복 확인·이메일 인증 API 명세가 사람에 의해 확정될 때
@@ -323,6 +369,7 @@ remaining_work:
 - 추가 요청 UI의 완료 기준 편입 여부 결정
 - 중복 확인·이메일 인증 API 연동 방식 결정과 구현
 - MEM-01 화면 요청 전송·실제 백엔드 응답 확인
+- SIGNUP-AC-19·완료 화면 기준 처리 결정, 완료 화면 직접 접근 처리 결정, 첨부 시안과의 비교
 completion_requires: {review_status: APPROVED, integration_status: null, deployment_status: null}
 review_evidence: []
 integration_evidence:
@@ -335,6 +382,8 @@ limitations:
 - 명세의 결과 문구는 상수로 있으나 API가 없어 화면에 표시될 경로가 없다.
 - 회원가입 버튼은 중복 확인·이메일 인증 API 없이 활성화될 수 없어, MEM-01 요청 코드도 화면에서 실행될 수 없다.
 - MEM-01 요청은 명세 endpoint 상대 경로만 사용하며, 백엔드 구축 전에는 개발 서버에서 404가 난다(현재 검증 불가).
+- 회원가입 완료 화면 관련 변경(SignUpComplete.jsx·SignUpComplete.css 새 파일, SignUp.jsx 이동 경로 1줄, App.jsx import·Route 2줄)은 커밋되지 않은 로컬 작업 트리에만 있다(signup-complete-001).
+- 회원가입 성공 응답 → 완료 화면 이동은 회원가입 버튼이 활성화될 수 없고 백엔드가 없어 화면에서 실행되지 않는다(현재 검증 불가).
 - 실행 모델 식별자는 확인하지 못했다.
-handoff: 회원가입 UI 확인은 youth_guide에서 npm run dev 실행 후 /signup에서 입력·버튼·약관을 직접 조작해 진행한다. 실행 중인 5199 서버(PID 66950, 2026-10-01T06:44:21Z에도 LISTEN)는 파일 변경을 반영하지 않으므로 종료 후 새로 띄운다. MEM-01 화면 확인은 중복 확인·이메일 인증 API 연동 후, 실제 응답 확인은 백엔드 구축과 접근 방식 결정 후 진행한다(보류).
+handoff: 완료 화면은 개발 서버에서 /signup/complete로 직접 열어 확인할 수 있다. 회원가입 UI 확인은 youth_guide에서 npm run dev 실행 후 /signup에서 입력·버튼·약관을 직접 조작해 진행한다. 실행 중인 5199 서버(PID 66950, 2026-10-01T06:44:21Z에도 LISTEN)는 파일 변경을 반영하지 않으므로 종료 후 새로 띄운다. MEM-01 화면 확인은 중복 확인·이메일 인증 API 연동 후, 실제 응답 확인은 백엔드 구축과 접근 방식 결정 후 진행한다(보류).
 ```
