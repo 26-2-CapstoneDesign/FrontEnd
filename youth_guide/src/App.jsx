@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
+import AuthLayout from "./components/AuthLayout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
@@ -13,18 +14,22 @@ import FindIdComplete from "./pages/FindIdComplete";
 import FindPassword from "./pages/FindPassword";
 import FindPasswordComplete from "./pages/FindPasswordComplete";
 
+import MyPage from "./pages/MyPage";
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
+        <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/find-id" element={<FindId />} />
           <Route path="/find-id/complete" element={<FindIdComplete />} />
           <Route path="/find-password" element={<FindPassword />} />
           <Route path="/find-password/complete" element={<FindPasswordComplete />} />
           <Route path="/signup" element={<SignUp />} />
+        </Route>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
           <Route path="/certifications/:certId" element={<CertificationDetail />} />
           <Route path="/reviews" element={<ReviewList />} />
           <Route path="/reviews/new" element={<ReviewWrite />} />
@@ -33,6 +38,7 @@ export default function App() {
           {import.meta.env.DEV && (
             <Route path="/onboarding/certifications" element={<FirstLogin />} />
           )}
+          <Route path="/mypage" element={<MyPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
