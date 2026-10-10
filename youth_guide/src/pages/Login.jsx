@@ -120,13 +120,21 @@ export default function Login() {
         </form>
 
         <div className="login-find">
-          <button className="login-find-button" type="button">
+          <button
+            className="login-find-button"
+            type="button"
+            onClick={() => navigate("/find-id")}
+          >
             아이디 찾기
           </button>
           <span className="login-find-divider" aria-hidden="true">
             |
           </span>
-          <button className="login-find-button" type="button">
+          <button
+            className="login-find-button"
+            type="button"
+            onClick={() => navigate("/find-password")}
+          >
             비밀번호 찾기
           </button>
         </div>
