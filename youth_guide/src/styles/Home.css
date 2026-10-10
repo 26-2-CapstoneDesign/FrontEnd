@@ -1,0 +1,291 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
+}
+
+.home-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* Calendar */
+.calendar-card,
+.today-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 32px 40px;
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.calendar-title {
+  min-width: 40px;
+  text-align: center;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.calendar-nav-button {
+  border: 0;
+  background: none;
+  padding: 4px 8px;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+}
+
+.calendar-nav-button:hover {
+  color: var(--color-text);
+}
+
+.calendar-card.is-locked .calendar-body {
+  filter: blur(4px);
+  opacity: 0.6;
+  pointer-events: none;
+  user-select: none;
+}
+
+.calendar-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  row-gap: 2px;
+}
+
+/* 날짜 줄 + 일정 줄(MAX_EVENT_LANES개)을 고정 높이로 잡아 행 높이를 항상 동일하게 */
+.calendar-week.is-dates {
+  grid-template-rows: 40px repeat(2, 16px);
+  row-gap: 2px;
+  padding-bottom: 8px;
+}
+
+.calendar-weekdays {
+  margin-bottom: 8px;
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.calendar-weekday.is-sunday {
+  color: var(--color-sunday);
+}
+
+.calendar-weekday.is-saturday {
+  color: var(--color-saturday);
+}
+
+.calendar-cell {
+  grid-row: 1;
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+}
+
+.calendar-date {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+}
+
+.calendar-date.is-today {
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.calendar-event {
+  margin: 0 2px;
+  padding: 0 8px;
+  height: 16px;
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  line-height: 16px;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Today panel */
+.today-card {
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+}
+
+.today-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.today-date {
+  margin-top: 12px;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-primary);
+}
+
+.today-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-md);
+  text-align: center;
+}
+
+.today-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.today-item {
+  position: relative;
+  padding: 12px 16px 12px 30px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  font-size: var(--font-size-sm);
+}
+
+.today-item::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+}
+
+.today-register {
+  margin-top: 20px;
+  padding: 12px;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.today-register:hover {
+  background: var(--color-primary-tint);
+}
+
+/* Recommended certifications */
+.home-section-title {
+  margin-bottom: 16px;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cert-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 22px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-text);
+  transition: box-shadow 0.15s;
+}
+
+.cert-card:hover {
+  color: var(--color-text);
+  box-shadow: var(--shadow-dropdown);
+}
+
+.cert-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+.cert-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cert-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+}
+
+.cert-category {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+@media (max-width: 1024px) {
+  .home {
+    gap: 48px;
+  }
+
+  .home-top {
+    grid-template-columns: 1fr;
+  }
+
+  .today-card {
+    min-height: 280px;
+  }
+
+  .cert-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .calendar-card {
+    padding: 24px 16px;
+  }
+
+  .cert-grid {
+    grid-template-columns: 1fr;
+  }
+}
