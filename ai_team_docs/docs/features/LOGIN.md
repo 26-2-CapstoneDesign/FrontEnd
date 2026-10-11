@@ -4,7 +4,7 @@
 schema_version: 3.1.0
 template: false
 record_type: feature
-summary_ko: 로그인 UI는 UI 코드 구현을 마쳤고 브라우저 검증을 기다리고 있어 IMPLEMENTING 상태다. 사용자 요청으로 로그인 버튼 옆에 회원가입 버튼(테두리형)을 두고, 클릭 시 /signup으로 이동하도록 구현했으며 이동은 브라우저에서 확인했다. 입력 반영·비밀번호 가림·메시지 영역 표시는 도구로 확인해 완료 기준 13개 중 8개가 충족됐고, 체크박스·hover·좁은 화면·21자 입력은 미확인이다. 로그인 API 연동은 API 명세 AUTH-01의 제안값(POST /api/v1/auth/login, loginName·password)으로 요청과 HTTP 상태 코드별 문구 표시를 구현했다(IMPLEMENTING, member-auth-api-001). 백엔드 미구축으로 실제 서버 응답은 현재 검증 불가이고, 백엔드 주소·proxy·환경변수 방식과 성공 응답·인증 전달 방식은 백엔드 구축 후 결정하도록 보류했다. 인증 정보 저장·로그인 후 이동은 구현하지 않았다. 로그인 기능 전체는 완료가 아니다.
+summary_ko: 로그인 UI는 UI 코드 구현을 마쳤고 브라우저 검증을 기다리고 있어 IMPLEMENTING 상태다. 사용자 요청으로 로그인 버튼 옆에 회원가입 버튼(테두리형)을 두고, 클릭 시 /signup으로 이동하도록 구현했으며 이동은 브라우저에서 확인했다. 입력 반영·비밀번호 가림·메시지 영역 표시는 도구로 확인해 완료 기준 13개 중 8개가 충족됐고, 체크박스·hover·좁은 화면·21자 입력은 미확인이다. 로그인 API 연동은 API 명세 AUTH-01의 제안값(POST /api/v1/auth/login, loginName·password)으로 요청과 HTTP 상태 코드별 문구 표시를 구현했다(IMPLEMENTING, member-auth-api-001). 백엔드 미구축으로 실제 서버 응답은 현재 검증 불가이고, 백엔드 주소·proxy·환경변수 방식과 성공 응답·인증 전달 방식은 백엔드 구축 후 결정하도록 보류했다. 인증 정보 저장·로그인 후 이동은 구현하지 않았다. 2026-10-09 사용자 요청으로 아이디 찾기 버튼은 /find-id(find-id-001), 비밀번호 찾기 버튼은 /find-password(find-password-001)로 이동한다. LOGIN-AC-06은 비밀번호 찾기 이동 추가로 UNVERIFIED다. 충족 수는 7이다. 로그인 기능 전체는 완료가 아니다.
 feature_id: LOGIN
 name: 로그인
 human_owner: null
@@ -22,13 +22,14 @@ approval_refs:
 - 'EXPLICIT_REQUEST@2026-10-01T16:51Z: 현재 대화의 사용자 요청 - Login.jsx에 AUTH-01(POST /api/v1/auth/login, loginName·password) 요청 추가, 토큰·쿠키·세션·인증 상태 관리 금지, 성공 응답 구조 추측 금지'
 - 'EXPLICIT_REQUEST(2026-10-01T16:51Z 이후 16:59:19Z 이전): 현재 대화의 사용자 답변 - 상대 경로 사용, 빈 값 검사 추가, 성공 시 안내 문구만 표시, 제안 오류 문구 사용, LOGIN-AC-05 문구 수정 승인(분모 유지)'
 - 'EXPLICIT_REQUEST@2026-10-01T17:13Z: 현재 대화의 사용자 요청 - 백엔드 주소·Vite proxy·환경변수·인증 방식은 백엔드 구축 후 결정으로 보류, 임의 지정·구현 금지, 검증 불가 부분은 "현재 검증 불가"로 기록'
-updated_at: '2026-10-01T17:13:46Z'
+- 'EXPLICIT_REQUEST@2026-10-09T15:41Z: 현재 대화의 사용자 요청 - 로그인 화면의 아이디 찾기 버튼만 FindId(/find-id)로 연결, 로그인 화면 디자인과 비밀번호 찾기 버튼은 유지(find-id-001)'
+updated_at: '2026-10-09T16:21:35Z'
 source_revision: b8a6a966a84cbebc431ddcd477ff41e4dfe5d012
 feature_file: docs/features/LOGIN.md
 latest_worklog: docs/worklogs/member-auth-api-001__jb__20261001T165919Z.md
 implementation_status: IMPLEMENTING
 work_status: BLOCKED
-acceptance_passed: 8
+acceptance_passed: 7
 acceptance_total: 13
 verification_status: PARTIAL
 review_status: PENDING
@@ -50,7 +51,7 @@ excluded_scope:
 - 'accessToken·refreshToken·JWT·쿠키·세션 등 인증 정보 저장, localStorage·sessionStorage 인증 정보 저장, 로그인 상태 전역 관리, /me 호출, 자동 로그인, 로그아웃(AUTH-01 성공 응답·인증 전달 방식 미정)'
 - 로그인 후 페이지 이동, 응답 본문 해석
 - 로그인 상태 유지 체크박스 값을 요청에 포함(AUTH-01 Request Body에 없음)
-- 아이디 찾기·비밀번호 찾기 기능과 페이지 이동(현재는 버튼 UI만)
+- 비밀번호 찾기 기능 본문(FIND_PASSWORD로 분리, find-password-001). 로그인 화면 버튼은 /find-password로 이동만 연결했다. 아이디 찾기는 2026-10-09 사용자 요청으로 /find-id 이동만 연결했다(find-id-001).
 dependency_refs:
 - youth_guide/src/App.jsx의 Route path="/login"(기존 라우팅, 수정하지 않음)
 - youth_guide/src/App.jsx의 Route path="/signup"(기존 라우팅, 회원가입 버튼 이동 대상, 수정하지 않음)
@@ -64,7 +65,7 @@ unknowns:
 - '로그인 상태 유지 체크박스의 실제 동작(현재는 화면 상태만 관리): UNDECIDED - 보류(인증 방식이 백엔드에서 정해진 뒤 결정)'
 - '로그인 성공 후 이동 경로: UNDECIDED - 보류(AUTH-01 성공 응답·인증 방식 결정 후). 요청에서 "로그인 성공 후 홈으로 이동하는 기능도 아직 구현하지 않음"으로만 언급됨'
 - '로그인 실패 시 오류 메시지: HTTP 상태 코드(400·401·429) 기준 문구는 2026-10-01 사용자가 승인했다. 오류 응답 본문의 세부 오류 구분은 UNDECIDED'
-- '아이디 찾기·비밀번호 찾기 기능: UNDECIDED'
+- '아이디 찾기 기능: FIND_ID로 분리(find-id-001). 비밀번호 찾기 기능: FIND_PASSWORD로 분리(find-password-001). 로그인 화면에는 각 버튼 이동만 포함한다.'
 - '로그인 API 연동의 완료 기준: LOGIN-AC-05 문구만 사용자 승인으로 AUTH-01 요청 기준으로 바꿨다. 그 밖의 API 연동 기준은 UNDECIDED'
 - '회원가입 버튼 UI·이동의 완료 기준 편입 여부: UNDECIDED(분모 변경은 사람 승인 필요, C21)'
 acceptance_definition_status: APPROVED
@@ -72,6 +73,7 @@ acceptance_approval_refs:
 - 'EXPLICIT_REQUEST@2026-09-30T11:48Z: 현재 대화의 사용자 요청(로그인 화면 구성·기능·스타일)'
 - 'EXPLICIT_REQUEST@2026-09-30T11:59Z: 현재 대화의 사용자 요청(비밀번호 최대 20자)'
 - 'EXPLICIT_REQUEST(2026-10-01T16:51Z 이후 16:59:19Z 이전): 현재 대화의 사용자 답변(LOGIN-AC-05 문구 수정 승인, 분모 13 유지)'
+- 'EXPLICIT_REQUEST@2026-10-09T15:41Z: 현재 대화의 사용자 요청(LOGIN-AC-06에 아이디 찾기 /find-id 이동을 반영, 분모 13 유지)'
 acceptance_criteria:
 - ac_id: LOGIN-AC-01
   condition: /login 화면 표시
@@ -105,10 +107,10 @@ acceptance_criteria:
   source_revision: b8a6a966a84cbebc431ddcd477ff41e4dfe5d012
 - ac_id: LOGIN-AC-06
   condition: /login 화면 표시
-  expected: 아이디 찾기·비밀번호 찾기 버튼이 보인다(기능·이동 없음).
-  status: MET
-  evidence_refs: ['E004 스냅샷 button "아이디 찾기"·"비밀번호 찾기"', 'Login.jsx에서 type="button", onClick 없음']
-  source_revision: f7ebd19a9ac4c291ce3897bb4306f8206b83f47c
+  expected: 아이디 찾기·비밀번호 찾기 버튼이 보인다. 아이디 찾기는 /find-id로 이동한다. 비밀번호 찾기는 /find-password로 이동한다.
+  status: UNVERIFIED
+  evidence_refs: ['비밀번호 찾기 클릭 후 /login에 머물렀다는 E003 근거는 2026-10-09 사용자 요청으로 /find-password 이동이 생기면서 현재 기대와 같지 않다.', 'Login.jsx 비밀번호 찾기 onClick navigate("/find-password"). 브라우저에서 클릭 후 /find-password와 제목 비밀번호 찾기를 확인했다(find-password-001 E001). 같은 기록에서 아이디 찾기 클릭은 다시 확인하지 않아 이 기준 전체를 MET로 두지 않는다.']
+  source_revision: 8e139b480b6c72b00e43a4fdb72f9f2be73fb682
 - ac_id: LOGIN-AC-07
   condition: 안내·오류 메시지 발생
   expected: 메시지가 지정된 영역에 표시된다.

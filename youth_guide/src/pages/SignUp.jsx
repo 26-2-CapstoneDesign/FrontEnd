@@ -67,6 +67,23 @@ const isValidPassword = (value) =>
 
 const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
+// MEM-01(POST /api/v1/members). Request Body에 정의된 필드만 보낸다. 이름·성별·생년월일·약관 동의는 명세에 없어 포함하지 않는다.
+const createMember = ({ loginName, nickname, email, password }) =>
+  fetch("/api/v1/members", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ loginName, nickname, email, password }),
+  });
+
+// 아이디 중복 확인 API는 명세에 없어 URL·요청 필드·응답 구조를 정할 수 없다. 명세가 확정되면 구현한다.
+// eslint-disable-next-line no-unused-vars
+const checkLoginName = async (loginName) => {};
+
+// 이메일 인증번호 발송 API는 명세에 없어 URL·요청 필드·응답 구조를 정할 수 없다. 명세가 확정되면 구현한다.
+// 인증번호 확인 API도 명세에 없어 확인 함수는 만들지 않았다.
+// eslint-disable-next-line no-unused-vars
+const sendVerificationCode = async (email) => {};
+
 const getDaysInMonth = (year, month) => {
   if (!month) return 31;
   // 연도를 고르지 않았으면 2월 29일까지 선택할 수 있도록 윤년을 기준으로 계산한다.
@@ -147,8 +164,18 @@ export default function SignUp() {
     setCodeStatus("idle");
   };
 
-  const handleSendCode = () => {
-    setEmailStatus(isValidEmail(email) ? "disconnected" : "invalid");
+  const handleCheckLoginName = async () => {
+    await checkLoginName(userId);
+    setIdCheckStatus("disconnected");
+  };
+
+  const handleSendCode = async () => {
+    if (!isValidEmail(email)) {
+      setEmailStatus("invalid");
+      return;
+    }
+    await sendVerificationCode(email);
+    setEmailStatus("disconnected");
   };
 
   const handleCodeChange = (event) => {
@@ -198,14 +225,9 @@ export default function SignUp() {
     setIsSubmitting(true);
     setSubmitMessage("");
     try {
-      // MEM-01 Request Body에 정의된 필드만 보낸다. 이름·성별·생년월일·약관 동의는 명세에 없어 포함하지 않는다.
-      const response = await fetch("/api/v1/members", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ loginName: userId, nickname, email, password }),
-      });
+      const response = await createMember({ loginName: userId, nickname, email, password });
       if (response.ok) {
-        navigate("/login");
+        navigate("/signup/complete");
         return;
       }
       setSubmitMessage(SIGNUP_ERROR_MESSAGES[response.status] ?? REQUEST_FAILED);
@@ -245,7 +267,7 @@ export default function SignUp() {
                 }
                 type="button"
                 disabled={isUserIdEmpty}
-                onClick={() => setIdCheckStatus("disconnected")}
+                onClick={handleCheckLoginName}
               >
                 중복 확인
               </button>
