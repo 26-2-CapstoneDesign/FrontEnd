@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../api/auth";
 import "../styles/Login.css";
 
 const LOGIN_EMPTY = "아이디와 비밀번호를 입력해 주세요.";
-const LOGIN_REQUESTED = "로그인 요청이 처리되었습니다.";
-const REQUEST_FAILED = "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.";
-
 const LOGIN_ERROR_MESSAGES = {
   400: "입력값을 다시 확인해 주세요.",
   401: "아이디 또는 비밀번호가 올바르지 않습니다.",
@@ -29,20 +27,16 @@ export default function Login() {
     }
 
     setIsSubmitting(true);
+    setMessage("");
     try {
-      // AUTH-01의 성공 응답·인증 전달 방식이 정해지지 않아 응답 본문을 읽거나 인증 정보를 저장하지 않는다.
-      const response = await fetch("/api/v1/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ loginName: userId, password }),
+      await login({
+        loginName: userId.trim(),
+        password,
+        rememberMe: isKeepLogin,
       });
-      setMessage(
-        response.ok
-          ? LOGIN_REQUESTED
-          : (LOGIN_ERROR_MESSAGES[response.status] ?? REQUEST_FAILED),
-      );
-    } catch {
-      setMessage(REQUEST_FAILED);
+      navigate("/", { replace: true });
+    } catch (error) {
+      setMessage(error.message);
     } finally {
       setIsSubmitting(false);
     }

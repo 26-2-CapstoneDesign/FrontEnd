@@ -1,57 +1,98 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  checkAvailability,
+  confirmEmailCode,
+  sendEmailCode,
+  signup,
+} from "../api/member";
+
 import "../styles/SignUp.css";
 
-const ID_MAX_LENGTH = 30;
+const ID_MAX_LENGTH = 20;
 const PASSWORD_MIN_LENGTH = 8;
 const PASSWORD_MAX_LENGTH = 20;
 const NAME_MAX_LENGTH = 20;
-const NICKNAME_MAX_LENGTH = 30;
+const NICKNAME_MAX_LENGTH = 20;
 const BIRTH_YEAR_START = 2009;
 const BIRTH_YEAR_END = 1900;
 
 const GENDER_OPTIONS = ["여성", "남성", "비공개"];
+const GENDER_CODES = { 여성: "FEMALE", 남성: "MALE", 비공개: "UNDISCLOSED" };
 
 const TERMS = [
   { id: "service", label: "(필수) 이용약관 동의", isRequired: true },
-  { id: "privacy", label: "(필수) 개인정보 수집 및 이용 동의", isRequired: true },
+  {
+    id: "privacy",
+    label: "(필수) 개인정보 수집 및 이용 동의",
+    isRequired: true,
+  },
   { id: "marketing", label: "(선택) 마케팅 정보 수신 동의", isRequired: false },
 ];
+
+const PASSWORD_HINT = "영문, 숫자, 특수문자를 포함해 8자 이상 입력해 주세요.";
+const PASSWORD_MISMATCH = "비밀번호가 일치하지 않습니다.";
+const TERMS_REQUIRED = "필수 약관에 동의해주세요.";
+const REQUEST_FAILED =
+  "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.";
 
 const ID_CHECK_MESSAGES = {
   available: { text: "사용 가능한 아이디입니다.", tone: "success" },
   duplicate: { text: "이미 존재하는 아이디입니다.", tone: "error" },
-  disconnected: { text: "중복 확인 서버가 아직 연결되지 않았습니다.", tone: "info" },
+  invalid: { text: "아이디는 영문과 숫자로 4~20자여야 합니다.", tone: "error" },
+  failed: { text: REQUEST_FAILED, tone: "error" },
 };
 
 const NICKNAME_CHECK_MESSAGES = {
   available: { text: "사용 가능한 닉네임입니다.", tone: "success" },
   duplicate: { text: "이미 존재하는 닉네임입니다.", tone: "error" },
-  disconnected: { text: "중복 확인 서버가 아직 연결되지 않았습니다.", tone: "info" },
+  invalid: {
+    text: "닉네임은 한글, 영문, 숫자로 2~20자여야 합니다.",
+    tone: "error",
+  },
+  failed: { text: REQUEST_FAILED, tone: "error" },
 };
 
 const EMAIL_MESSAGES = {
+  sent: {
+    text: "인증번호를 보냈습니다. 5분 안에 입력해 주세요.",
+    tone: "success",
+  },
   invalid: { text: "이메일 형식이 올바르지 않습니다.", tone: "error" },
   duplicate: { text: "이미 가입된 이메일입니다.", tone: "error" },
-  disconnected: { text: "인증 서버가 아직 연결되지 않았습니다.", tone: "info" },
+  tooSoon: {
+    text: "인증번호는 1분 뒤에 다시 받을 수 있습니다.",
+    tone: "error",
+  },
+  failed: { text: REQUEST_FAILED, tone: "error" },
 };
 
 const CODE_MESSAGES = {
   verified: { text: "인증되었습니다.", tone: "success" },
-  mismatch: { text: "인증번호를 확인해 주세요.", tone: "error" },
-  disconnected: { text: "인증 서버가 아직 연결되지 않았습니다.", tone: "info" },
+  mismatch: { text: "인증번호가 일치하지 않습니다.", tone: "error" },
+  expired: {
+    text: "인증번호가 만료되었습니다. 다시 받아 주세요.",
+    tone: "error",
+  },
+  exceeded: {
+    text: "입력 횟수를 초과했습니다. 인증번호를 다시 받아 주세요.",
+    tone: "error",
+  },
+  failed: { text: REQUEST_FAILED, tone: "error" },
 };
 
-const PASSWORD_HINT = "영문, 숫자, 특수문자를 포함해 8자 이상 입력해 주세요.";
-const PASSWORD_MISMATCH = "비밀번호가 일치하지 않습니다.";
-const TERMS_REQUIRED = "필수 약관에 동의해주세요.";
-const REQUEST_FAILED = "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.";
-
-const SIGNUP_ERROR_MESSAGES = {
-  400: "입력값을 다시 확인해 주세요.",
-  409: "이미 사용 중인 아이디, 닉네임 또는 이메일입니다.",
+// 서버 에러 코드 → 화면 상태
+const EMAIL_ERROR_STATUS = {
+  INVALID_INPUT: "invalid",
+  DUPLICATE_EMAIL: "duplicate",
+  EMAIL_RESEND_TOO_SOON: "tooSoon",
 };
 
+const CODE_ERROR_STATUS = {
+  EMAIL_CODE_MISMATCH: "mismatch",
+  EMAIL_CODE_EXPIRED: "expired",
+  EMAIL_CODE_ATTEMPTS_EXCEEDED: "exceeded",
+};
 const BIRTH_YEARS = Array.from(
   { length: BIRTH_YEAR_START - BIRTH_YEAR_END + 1 },
   (_, index) => BIRTH_YEAR_START - index,
@@ -66,23 +107,6 @@ const isValidPassword = (value) =>
   /[^A-Za-z\d\s]/.test(value);
 
 const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-
-// MEM-01(POST /api/v1/members). Request Body에 정의된 필드만 보낸다. 이름·성별·생년월일·약관 동의는 명세에 없어 포함하지 않는다.
-const createMember = ({ loginName, nickname, email, password }) =>
-  fetch("/api/v1/members", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ loginName, nickname, email, password }),
-  });
-
-// 아이디 중복 확인 API는 명세에 없어 URL·요청 필드·응답 구조를 정할 수 없다. 명세가 확정되면 구현한다.
-// eslint-disable-next-line no-unused-vars
-const checkLoginName = async (loginName) => {};
-
-// 이메일 인증번호 발송 API는 명세에 없어 URL·요청 필드·응답 구조를 정할 수 없다. 명세가 확정되면 구현한다.
-// 인증번호 확인 API도 명세에 없어 확인 함수는 만들지 않았다.
-// eslint-disable-next-line no-unused-vars
-const sendVerificationCode = async (email) => {};
 
 const getDaysInMonth = (year, month) => {
   if (!month) return 31;
@@ -164,18 +188,64 @@ export default function SignUp() {
     setCodeStatus("idle");
   };
 
+  //   const handleCheckLoginName = async () => {
+  //     await checkLoginName(userId);
+  //     setIdCheckStatus("disconnected");
+  //   };
+
+  //   const handleSendCode = async () => {
+  //     if (!isValidEmail(email)) {
+  //       setEmailStatus("invalid");
+  //       return;
+  //     }
+  //     await sendVerificationCode(email);
+  //     setEmailStatus("disconnected");
+  //   };
+
   const handleCheckLoginName = async () => {
-    await checkLoginName(userId);
-    setIdCheckStatus("disconnected");
+    try {
+      const { available } = await checkAvailability({
+        loginName: userId.trim(),
+      });
+      setIdCheckStatus(available ? "available" : "duplicate");
+    } catch (error) {
+      setIdCheckStatus(error.code === "INVALID_INPUT" ? "invalid" : "failed");
+    }
   };
 
   const handleSendCode = async () => {
-    if (!isValidEmail(email)) {
+    if (!isValidEmail(email.trim())) {
       setEmailStatus("invalid");
       return;
     }
-    await sendVerificationCode(email);
-    setEmailStatus("disconnected");
+    try {
+      await sendEmailCode(email.trim());
+      setEmailStatus("sent");
+    } catch (error) {
+      setEmailStatus(EMAIL_ERROR_STATUS[error.code] ?? "failed");
+    }
+  };
+
+  const handleConfirmCode = async () => {
+    try {
+      await confirmEmailCode(email.trim(), verificationCode.trim());
+      setCodeStatus("verified");
+    } catch (error) {
+      setCodeStatus(CODE_ERROR_STATUS[error.code] ?? "failed");
+    }
+  };
+
+  const handleCheckNickname = async () => {
+    try {
+      const { available } = await checkAvailability({
+        nickname: nickname.trim(),
+      });
+      setNicknameCheckStatus(available ? "available" : "duplicate");
+    } catch (error) {
+      setNicknameCheckStatus(
+        error.code === "INVALID_INPUT" ? "invalid" : "failed",
+      );
+    }
   };
 
   const handleCodeChange = (event) => {
@@ -206,9 +276,7 @@ export default function SignUp() {
 
   const handleAllTermsChange = (event) => {
     const { checked } = event.target;
-    setAgreedTerms(
-      Object.fromEntries(TERMS.map((term) => [term.id, checked])),
-    );
+    setAgreedTerms(Object.fromEntries(TERMS.map((term) => [term.id, checked])));
     setIsTermsTouched(true);
   };
 
@@ -225,14 +293,26 @@ export default function SignUp() {
     setIsSubmitting(true);
     setSubmitMessage("");
     try {
-      const response = await createMember({ loginName: userId, nickname, email, password });
-      if (response.ok) {
-        navigate("/signup/complete");
-        return;
-      }
-      setSubmitMessage(SIGNUP_ERROR_MESSAGES[response.status] ?? REQUEST_FAILED);
-    } catch {
-      setSubmitMessage(REQUEST_FAILED);
+      const birthDate = [
+        birthYear,
+        String(birthMonth).padStart(2, "0"),
+        String(birthDay).padStart(2, "0"),
+      ].join("-");
+
+      await signup({
+        loginName: userId.trim(),
+        password,
+        passwordConfirm,
+        nickname: nickname.trim(),
+        email: email.trim(),
+        name: name.trim(),
+        gender: GENDER_CODES[gender],
+        birthDate,
+      });
+      navigate("/signup/complete", { replace: true });
+    } catch (error) {
+      // 입력값 오류면 첫 번째 필드 메시지를, 아니면 서버 메시지를 보여준다.
+      setSubmitMessage(error.fieldErrors[0]?.message ?? error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -291,7 +371,9 @@ export default function SignUp() {
             />
             <FieldMessage
               message={
-                isPasswordValid ? null : { text: PASSWORD_HINT, tone: passwordHintTone }
+                isPasswordValid
+                  ? null
+                  : { text: PASSWORD_HINT, tone: passwordHintTone }
               }
             />
           </div>
@@ -366,7 +448,7 @@ export default function SignUp() {
                 className="signup-side-button"
                 type="button"
                 disabled={verificationCode.trim() === ""}
-                onClick={() => setCodeStatus("disconnected")}
+                onClick={handleConfirmCode}
               >
                 확인
               </button>
@@ -491,12 +573,14 @@ export default function SignUp() {
                 className="signup-side-button"
                 type="button"
                 disabled={nickname.trim() === ""}
-                onClick={() => setNicknameCheckStatus("disconnected")}
+                onClick={handleCheckNickname}
               >
                 중복 확인
               </button>
             </div>
-            <FieldMessage message={NICKNAME_CHECK_MESSAGES[nicknameCheckStatus]} />
+            <FieldMessage
+              message={NICKNAME_CHECK_MESSAGES[nicknameCheckStatus]}
+            />
           </div>
 
           <fieldset className="signup-field signup-fieldset">

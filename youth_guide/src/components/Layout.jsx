@@ -1,18 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Header from "./Header";
-import { MOCK_LOGIN_KEY, getMockCurrentUser } from "../utils/mockAuth";
+import { getMe, logout } from "../api/auth";
 
 export default function Layout() {
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState(getMockCurrentUser);
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const handleLogout = () => {
-    // TODO(로그인 연동): 로그아웃 API 연결 후 상태 초기화
+  useEffect(() => {
+    let isActive = true;
+    getMe()
+      .then((me) => {
+        // Header는 displayName을 쓰므로 닉네임을 넣어준다.
+        if (isActive) setCurrentUser({ ...me, displayName: me.nickname });
+      })
+      .catch(() => {
+        // 401(로그인 안 됨)이면 로그아웃 상태로 둔다.
+        if (isActive) setCurrentUser(null);
+      });
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const handleLogout = async () => {
     try {
-      sessionStorage.removeItem(MOCK_LOGIN_KEY);
+      await logout();
     } catch {
-      // 저장소 접근 불가 시 무시
+      // 세션이 이미 끝났어도 화면은 로그아웃 상태로 바꾼다.
     }
     setCurrentUser(null);
     navigate("/");
