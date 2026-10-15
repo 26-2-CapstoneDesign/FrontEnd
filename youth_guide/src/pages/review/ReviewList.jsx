@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import "../styles/ReviewList.css";
+import "../../styles/ReviewList.css";
 import { getReviews, seedDummyReviews } from "../../utils/reviewStore.js";
 
 const PAGE_SIZE = 10;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { CERTIFICATIONS, RECOMMENDED_CERT_IDS } from "../../data/certifications";
-import "../styles/Home.css";
+import "../../styles/Home.css";
 
 const RECOMMENDED_CERTS = RECOMMENDED_CERT_IDS.map((id) =>
   CERTIFICATIONS.find((cert) => cert.id === id),

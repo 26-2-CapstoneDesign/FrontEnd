@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { getCertification } from "../../data/certifications";
-import "../styles/CertificationDetail.css";
+import "../../styles/CertificationDetail.css";
 
 const QNET_URL = "https://www.q-net.or.kr";
 

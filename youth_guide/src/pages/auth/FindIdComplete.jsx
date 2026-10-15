@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import "../styles/FindIdComplete.css";
+import "../../styles/FindIdComplete.css";
 
 const PREVIEW_LOGIN_ID = "chungnyeon";
 

@@ -1,23 +1,23 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import AuthLayout from "./components/AuthLayout";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
-import CertificationList from "./pages/CertificationList";
-import CertificationDetail from "./pages/CertificationDetail";
-import ReviewList from "./pages/ReviewList";
-import ReviewWrite from "./pages/ReviewWrite";
-import ReviewDetail from "./pages/ReviewDetail";
-import FirstLogin from "./pages/FirstLogin";
-import ChangeId from "./pages/ChangeId";
-import ChangePassword from "./pages/ChangePassword";
-import SignUpComplete from "./pages/SignUpComplete";
-import FindId from "./pages/FindId";
-import FindIdComplete from "./pages/FindIdComplete";
-import FindPassword from "./pages/FindPassword";
-import FindPasswordComplete from "./pages/FindPasswordComplete";
-import MyPage from "./pages/MyPage";
+import Home from "./pages/home/Home";
+import Login from "./pages/auth/Login";
+import SignUp from "./pages/auth/SignUp";
+import CertificationList from "./pages/certification/CertificationList";
+import CertificationDetail from "./pages/certification/CertificationDetail";
+import ReviewList from "./pages/review/ReviewList";
+import ReviewWrite from "./pages/review/ReviewWrite";
+import ReviewDetail from "./pages/review/ReviewDetail";
+import FirstLogin from "./pages/onboarding/FirstLogin";
+import ChangeId from "./pages/mypage/ChangeId";
+import ChangePassword from "./pages/mypage/ChangePassword";
+import SignUpComplete from "./pages/auth/SignUpComplete";
+import FindId from "./pages/auth/FindId";
+import FindIdComplete from "./pages/auth/FindIdComplete";
+import FindPassword from "./pages/auth/FindPassword";
+import FindPasswordComplete from "./pages/auth/FindPasswordComplete";
+import MyPage from "./pages/mypage/MyPage";
 
 export default function App() {
   return (

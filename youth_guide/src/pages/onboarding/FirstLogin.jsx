@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import "../styles/FirstLogin.css";
+import "../../styles/FirstLogin.css";
 
 const INTEREST_PAGE_SIZE = 3;
 const SEARCH_MAX_LENGTH = 100;

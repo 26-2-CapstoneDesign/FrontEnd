@@ -7,7 +7,7 @@ import {
   signup,
 } from "../../api/member";
 
-import "../styles/SignUp.css";
+import "../../styles/SignUp.css";
 
 const ID_MAX_LENGTH = 20;
 const PASSWORD_MIN_LENGTH = 8;
