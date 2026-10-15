@@ -30,6 +30,10 @@ export default function App() {
           <Route path="/find-password/complete" element={<FindPasswordComplete />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signup/complete" element={<SignUpComplete />} />
+          {/* 백엔드 구축 전 UI 확인용 임시 직접 접근 경로이며 개발 서버에서만 등록된다. */}
+          {import.meta.env.DEV && (
+            <Route path="/onboarding/certifications" element={<FirstLogin />} />
+          )}
         </Route>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
@@ -37,12 +41,7 @@ export default function App() {
           <Route path="/reviews" element={<ReviewList />} />
           <Route path="/reviews/new" element={<ReviewWrite />} />
           <Route path="/reviews/:reviewId" element={<ReviewDetail />} />
-          <Route path="/firstlogin" element={<FirstLogin />} />
-          
-          {/* 백엔드 구축 전 UI 확인용 임시 직접 접근 경로이며 개발 서버에서만 등록된다.
-          {import.meta.env.DEV && (
-            <Route path="/onboarding/certifications" element={<FirstLogin />} />
-          )} */}
+          <Route path="/firstlogin" element={<FirstLogin />} /
           <Route path="/mypage" element={<MyPage />} />
           {import.meta.env.DEV && (
             <Route path="/change-id" element={<ChangeId />} />
