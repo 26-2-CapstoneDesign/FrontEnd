@@ -37,6 +37,7 @@ export default function App() {
           <Route path="/reviews" element={<ReviewList />} />
           <Route path="/reviews/new" element={<ReviewWrite />} />
           <Route path="/reviews/:reviewId" element={<ReviewDetail />} />
+          <Route path="/reviews/:reviewId/edit" element={<ReviewWrite />} />
           <Route path="/firstlogin" element={<FirstLogin />} />
           
           {/* 백엔드 구축 전 UI 확인용 임시 직접 접근 경로이며 개발 서버에서만 등록된다.
