@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "../styles/FindPasswordComplete.css";
+import "../../styles/FindPasswordComplete.css";
 
 export default function FindPasswordComplete() {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../api/auth";
-import "../styles/Login.css";
+import { login } from "../../api/auth";
+import "../../styles/Login.css";
 
 const LOGIN_EMPTY = "아이디와 비밀번호를 입력해 주세요.";
 const LOGIN_ERROR_MESSAGES = {

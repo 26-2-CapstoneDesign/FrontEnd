@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/ChangeId.css";
+import "../../styles/ChangeId.css";
 
 // 백엔드 API가 없어 화면 확인용 임시 값을 사용한다. 실제 회원 정보·인증번호가 아니다.
 const MOCK_CURRENT_USER_ID = "youthguide";

@@ -9,8 +9,8 @@ import {
   saveCurrentJobs,
   saveInterestCertificates,
   saveInterestJobs,
-} from "../api/onboarding";
-import "../styles/FirstLogin.css";
+} from "../../api/onboarding";
+import "../../styles/FirstLogin.css";
 
 const SEARCH_MAX_LENGTH = 100;
 
@@ -20,31 +20,134 @@ const SEARCH_MAX_LENGTH = 100;
 const MOCK_NCS_RELEASE_ID = "mock-release";
 
 const MOCK_NCS_CATEGORIES = [
-  { ncsCategoryId: "mock-category-a", ncsReleaseId: MOCK_NCS_RELEASE_ID, code: "MOCK_A", name: "샘플 분류 A", levelCode: "MOCK_LEVEL", parentCategoryId: null },
-  { ncsCategoryId: "mock-category-b", ncsReleaseId: MOCK_NCS_RELEASE_ID, code: "MOCK_B", name: "샘플 분류 B", levelCode: "MOCK_LEVEL", parentCategoryId: null },
-  { ncsCategoryId: "mock-category-c", ncsReleaseId: MOCK_NCS_RELEASE_ID, code: "MOCK_C", name: "샘플 분류 C", levelCode: "MOCK_LEVEL", parentCategoryId: null },
-  { ncsCategoryId: "mock-category-d", ncsReleaseId: MOCK_NCS_RELEASE_ID, code: "MOCK_D", name: "샘플 분류 D", levelCode: "MOCK_LEVEL", parentCategoryId: null },
+  {
+    ncsCategoryId: "mock-category-a",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    code: "MOCK_A",
+    name: "샘플 분류 A",
+    levelCode: "MOCK_LEVEL",
+    parentCategoryId: null,
+  },
+  {
+    ncsCategoryId: "mock-category-b",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    code: "MOCK_B",
+    name: "샘플 분류 B",
+    levelCode: "MOCK_LEVEL",
+    parentCategoryId: null,
+  },
+  {
+    ncsCategoryId: "mock-category-c",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    code: "MOCK_C",
+    name: "샘플 분류 C",
+    levelCode: "MOCK_LEVEL",
+    parentCategoryId: null,
+  },
+  {
+    ncsCategoryId: "mock-category-d",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    code: "MOCK_D",
+    name: "샘플 분류 D",
+    levelCode: "MOCK_LEVEL",
+    parentCategoryId: null,
+  },
 ];
 
 // ncsReleaseId·ncsCategoryId는 CERT-01 응답 필드가 아니라 mock 필터링에만 쓰는 값이다.
 const MOCK_CERTIFICATES = [
-  { certificateId: "mock-01", displayName: "샘플 자격증 01", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-a" },
-  { certificateId: "mock-02", displayName: "샘플 자격증 02", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-a" },
-  { certificateId: "mock-03", displayName: "샘플 자격증 03", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-b" },
-  { certificateId: "mock-04", displayName: "샘플 자격증 04", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-b" },
-  { certificateId: "mock-05", displayName: "샘플 자격증 05", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-c" },
-  { certificateId: "mock-06", displayName: "샘플 자격증 06", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-c" },
-  { certificateId: "mock-07", displayName: "샘플 자격증 07", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-d" },
-  { certificateId: "mock-08", displayName: "샘플 자격증 08", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-a" },
-  { certificateId: "mock-09", displayName: "샘플 자격증 09", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-b" },
-  { certificateId: "mock-10", displayName: "샘플 자격증 10", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-c" },
-  { certificateId: "mock-11", displayName: "샘플 자격증 11", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-d" },
-  { certificateId: "mock-12", displayName: "샘플 자격증 12", ncsReleaseId: MOCK_NCS_RELEASE_ID, ncsCategoryId: "mock-category-d" },
+  {
+    certificateId: "mock-01",
+    displayName: "샘플 자격증 01",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    ncsCategoryId: "mock-category-a",
+  },
+  {
+    certificateId: "mock-02",
+    displayName: "샘플 자격증 02",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    ncsCategoryId: "mock-category-a",
+  },
+  {
+    certificateId: "mock-03",
+    displayName: "샘플 자격증 03",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    ncsCategoryId: "mock-category-b",
+  },
+  {
+    certificateId: "mock-04",
+    displayName: "샘플 자격증 04",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    ncsCategoryId: "mock-category-b",
+  },
+  {
+    certificateId: "mock-05",
+    displayName: "샘플 자격증 05",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    ncsCategoryId: "mock-category-c",
+  },
+  {
+    certificateId: "mock-06",
+    displayName: "샘플 자격증 06",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    ncsCategoryId: "mock-category-c",
+  },
+  {
+    certificateId: "mock-07",
+    displayName: "샘플 자격증 07",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    ncsCategoryId: "mock-category-d",
+  },
+  {
+    certificateId: "mock-08",
+    displayName: "샘플 자격증 08",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    ncsCategoryId: "mock-category-a",
+  },
+  {
+    certificateId: "mock-09",
+    displayName: "샘플 자격증 09",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    ncsCategoryId: "mock-category-b",
+  },
+  {
+    certificateId: "mock-10",
+    displayName: "샘플 자격증 10",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    ncsCategoryId: "mock-category-c",
+  },
+  {
+    certificateId: "mock-11",
+    displayName: "샘플 자격증 11",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    ncsCategoryId: "mock-category-d",
+  },
+  {
+    certificateId: "mock-12",
+    displayName: "샘플 자격증 12",
+    ncsReleaseId: MOCK_NCS_RELEASE_ID,
+    ncsCategoryId: "mock-category-d",
+  },
 ];
 
 // 관심 자격증 조회·추천 자격증 API는 명세에 없다(API 명세 미정).
-const MOCK_INTEREST_IDS = ["mock-01", "mock-03", "mock-05", "mock-07", "mock-08", "mock-10", "mock-11"];
-const MOCK_RECOMMENDED_IDS = ["mock-02", "mock-03", "mock-04", "mock-06", "mock-09", "mock-12"];
+const MOCK_INTEREST_IDS = [
+  "mock-01",
+  "mock-03",
+  "mock-05",
+  "mock-07",
+  "mock-08",
+  "mock-10",
+  "mock-11",
+];
+const MOCK_RECOMMENDED_IDS = [
+  "mock-02",
+  "mock-03",
+  "mock-04",
+  "mock-06",
+  "mock-09",
+  "mock-12",
+];
 
 const STEPS = [
   { id: 1, label: "현재 직무" },
@@ -54,17 +157,26 @@ const STEPS = [
 ];
 
 const CERTIFICATE_BY_ID = Object.fromEntries(
-  MOCK_CERTIFICATES.map((certificate) => [certificate.certificateId, certificate]),
+  MOCK_CERTIFICATES.map((certificate) => [
+    certificate.certificateId,
+    certificate,
+  ]),
 );
 const CATEGORY_NAME_BY_ID = Object.fromEntries(
-  MOCK_NCS_CATEGORIES.map((category) => [category.ncsCategoryId, category.name]),
+  MOCK_NCS_CATEGORIES.map((category) => [
+    category.ncsCategoryId,
+    category.name,
+  ]),
 );
-const MOCK_RECOMMENDED_CERTIFICATES = MOCK_RECOMMENDED_IDS.map((id) => CERTIFICATE_BY_ID[id]);
+const MOCK_RECOMMENDED_CERTIFICATES = MOCK_RECOMMENDED_IDS.map(
+  (id) => CERTIFICATE_BY_ID[id],
+);
 
 const SEARCH_EMPTY = "검색어를 입력해 주세요.";
 const LIST_EMPTY = "조건에 맞는 자격증이 없습니다.";
 const JOB_EMPTY = "조건에 맞는 샘플 분류가 없습니다.";
-const JOB_SAMPLE_NOTE = "직무 분류 API가 없어 화면 확인용 샘플 분류만 표시합니다. 실제 직무 목록이 아닙니다.";
+const JOB_SAMPLE_NOTE =
+  "직무 분류 API가 없어 화면 확인용 샘플 분류만 표시합니다. 실제 직무 목록이 아닙니다.";
 const ACQUIRED_DATE_REQUIRED = "취득일을 입력해 주세요.";
 const ACQUIRED_DATE_FUTURE = "취득일은 오늘 이후 날짜로 입력할 수 없습니다.";
 
@@ -92,8 +204,20 @@ const toggleId = (ids, id) =>
 function SearchIcon() {
   return (
     <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-      <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" strokeWidth="2" />
-      <path d="m16 16 4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <circle
+        cx="11"
+        cy="11"
+        r="6.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <path
+        d="m16 16 4 4"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -110,7 +234,8 @@ function CategoryFilters({ selectedCategory, onSelect, label }) {
         전체
       </button>
       {MOCK_NCS_CATEGORIES.map((category) => {
-        const isActive = selectedCategory?.ncsCategoryId === category.ncsCategoryId;
+        const isActive =
+          selectedCategory?.ncsCategoryId === category.ncsCategoryId;
         return (
           <button
             key={category.ncsCategoryId}
@@ -132,7 +257,15 @@ function CategoryFilters({ selectedCategory, onSelect, label }) {
   );
 }
 
-function JobStep({ title, selectedIds, onToggle, query, onQueryChange, categories, note }) {
+function JobStep({
+  title,
+  selectedIds,
+  onToggle,
+  query,
+  onQueryChange,
+  categories,
+  note,
+}) {
   const normalized = query.trim();
   const rows = categories.filter(
     (category) =>
@@ -143,7 +276,9 @@ function JobStep({ title, selectedIds, onToggle, query, onQueryChange, categorie
 
   return (
     <div className="onboarding-panel">
-      <h1 id="onboarding-step-title" className="onboarding-title">{title}</h1>
+      <h1 id="onboarding-step-title" className="onboarding-title">
+        {title}
+      </h1>
       {note ? <p className="onboarding-note">{note}</p> : null}
       <label className="onboarding-search">
         <span className="onboarding-search-icon">
@@ -194,14 +329,19 @@ function JobStep({ title, selectedIds, onToggle, query, onQueryChange, categorie
                         onChange={() => onToggle(category.ncsCategoryId)}
                         onClick={(event) => event.stopPropagation()}
                         onKeyDown={(event) => {
-                          if (event.key !== " " && event.key !== "Enter") return;
+                          if (event.key !== " " && event.key !== "Enter")
+                            return;
                           event.preventDefault();
                           onToggle(category.ncsCategoryId);
                         }}
                         aria-label={`${category.name} 선택`}
                       />
                     </td>
-                    <td>{category.parentCategoryId ? category.parentCategoryId : "샘플"}</td>
+                    <td>
+                      {category.parentCategoryId
+                        ? category.parentCategoryId
+                        : "샘플"}
+                    </td>
                     <td>{category.name}</td>
                     <td>{category.code}</td>
                     <td>{category.levelCode}</td>
@@ -243,12 +383,18 @@ export default function FirstLogin() {
   const [navigationMessage, setNavigationMessage] = useState("");
 
   const today = getToday();
-  const jobCategories = catalogStatus === "READY" && apiJobs ? apiJobs : MOCK_NCS_CATEGORIES;
+  const jobCategories =
+    catalogStatus === "READY" && apiJobs ? apiJobs : MOCK_NCS_CATEGORIES;
   const jobNote = catalogStatus === "READY" && apiJobs ? "" : JOB_SAMPLE_NOTE;
   const certificateSource =
-    catalogStatus === "READY" && apiCertificates ? apiCertificates : MOCK_CERTIFICATES;
+    catalogStatus === "READY" && apiCertificates
+      ? apiCertificates
+      : MOCK_CERTIFICATES;
   const certificateById = Object.fromEntries(
-    certificateSource.map((certificate) => [certificate.certificateId, certificate]),
+    certificateSource.map((certificate) => [
+      certificate.certificateId,
+      certificate,
+    ]),
   );
   const acquiredResults = filterCertificates(certificateSource, {
     query: acquiredQuery.trim(),
@@ -291,7 +437,9 @@ export default function FirstLogin() {
 
   const isSearching = searchQuery !== null;
   const listedCertificates = filterCertificates(
-    isSearching || catalogStatus === "READY" ? certificateSource : MOCK_RECOMMENDED_CERTIFICATES,
+    isSearching || catalogStatus === "READY"
+      ? certificateSource
+      : MOCK_RECOMMENDED_CERTIFICATES,
     { query: searchQuery, category: selectedCategory },
   );
 
@@ -301,7 +449,9 @@ export default function FirstLogin() {
   };
 
   const handleAdd = (certificateId) => {
-    setInterestIds((prev) => (prev.includes(certificateId) ? prev : [...prev, certificateId]));
+    setInterestIds((prev) =>
+      prev.includes(certificateId) ? prev : [...prev, certificateId],
+    );
     setCompleteMessage("");
   };
 
@@ -324,7 +474,9 @@ export default function FirstLogin() {
   };
 
   const handleAcquiredOpen = (certificateId) => {
-    const saved = acquiredList.find((item) => item.certificateId === certificateId);
+    const saved = acquiredList.find(
+      (item) => item.certificateId === certificateId,
+    );
     setAcquiredDialog({
       certificateId,
       date: saved ? saved.acquiredDate : "",
@@ -350,30 +502,43 @@ export default function FirstLogin() {
     }
     setIsSavingAcquired(true);
     try {
-      const result = await saveAcquiredCertificate({ certificateId, acquiredDate: date });
+      const result = await saveAcquiredCertificate({
+        certificateId,
+        acquiredDate: date,
+      });
       if (result.status === "FAILED") {
-        setAcquiredMessage("서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+        setAcquiredMessage(
+          "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+        );
         return;
       }
       setAcquiredList((prev) => {
-        const exists = prev.some((item) => item.certificateId === certificateId);
+        const exists = prev.some(
+          (item) => item.certificateId === certificateId,
+        );
         if (!exists) return [...prev, { certificateId, acquiredDate: date }];
         return prev.map((item) =>
-          item.certificateId === certificateId ? { certificateId, acquiredDate: date } : item,
+          item.certificateId === certificateId
+            ? { certificateId, acquiredDate: date }
+            : item,
         );
       });
       setCompleteMessage("");
       setAcquiredDialog(null);
       setAcquiredMessage("");
     } catch {
-      setAcquiredMessage("서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+      setAcquiredMessage(
+        "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+      );
     } finally {
       setIsSavingAcquired(false);
     }
   };
 
   const handleAcquiredRemove = (certificateId) => {
-    setAcquiredList((prev) => prev.filter((acquired) => acquired.certificateId !== certificateId));
+    setAcquiredList((prev) =>
+      prev.filter((acquired) => acquired.certificateId !== certificateId),
+    );
     setCompleteMessage("");
   };
 
@@ -394,7 +559,9 @@ export default function FirstLogin() {
           : `관심 자격증 ${interestIds.length}개, 취득한 자격증 ${acquiredList.length}개로 선택을 완료했습니다. 서버 저장은 아직 연결되지 않았습니다. 직무 선택은 저장 API가 없어 이 화면에만 남아 있습니다.`,
       );
     } catch {
-      setCompleteMessage("서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+      setCompleteMessage(
+        "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+      );
     } finally {
       setIsCompleting(false);
     }
@@ -405,17 +572,22 @@ export default function FirstLogin() {
     if (nextStep > step) {
       setIsMoving(true);
       try {
-        const result = step === 1
-          ? await saveCurrentJobs(currentJobIds)
-          : step === 2
-            ? await saveInterestJobs(interestJobIds)
-            : { status: "NOT_IMPLEMENTED" };
+        const result =
+          step === 1
+            ? await saveCurrentJobs(currentJobIds)
+            : step === 2
+              ? await saveInterestJobs(interestJobIds)
+              : { status: "NOT_IMPLEMENTED" };
         if (result.status === "FAILED") {
-          setNavigationMessage("서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+          setNavigationMessage(
+            "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+          );
           return;
         }
       } catch {
-        setNavigationMessage("서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+        setNavigationMessage(
+          "서버와 통신하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+        );
         return;
       } finally {
         setIsMoving(false);
@@ -429,7 +601,10 @@ export default function FirstLogin() {
 
   return (
     <div className="onboarding-page">
-      <section className="onboarding-card" aria-labelledby="onboarding-step-title">
+      <section
+        className="onboarding-card"
+        aria-labelledby="onboarding-step-title"
+      >
         <ol className="onboarding-steps">
           {STEPS.map((item) => (
             <li key={item.id}>
@@ -466,7 +641,9 @@ export default function FirstLogin() {
               <span className="onboarding-search-icon">
                 <SearchIcon />
               </span>
-              <span className="interest-visually-hidden">취득한 자격증명 검색</span>
+              <span className="interest-visually-hidden">
+                취득한 자격증명 검색
+              </span>
               <input
                 type="text"
                 className="onboarding-search-input"
@@ -486,19 +663,25 @@ export default function FirstLogin() {
             ) : (
               <ul className="onboarding-cards">
                 {acquiredResults.map((certificate) => {
-                  const saved = acquiredList.find((item) => item.certificateId === certificate.certificateId);
+                  const saved = acquiredList.find(
+                    (item) => item.certificateId === certificate.certificateId,
+                  );
                   return (
                     <li key={certificate.certificateId}>
                       <button
                         type="button"
                         className="onboarding-cert"
-                        onClick={() => handleAcquiredOpen(certificate.certificateId)}
+                        onClick={() =>
+                          handleAcquiredOpen(certificate.certificateId)
+                        }
                       >
                         <span
                           className={`onboarding-cert-check${saved ? " is-checked" : ""}`}
                           aria-hidden="true"
                         />
-                        <span className="onboarding-cert-name">{certificate.displayName}</span>
+                        <span className="onboarding-cert-name">
+                          {certificate.displayName}
+                        </span>
                         <span className="onboarding-cert-meta">
                           {saved
                             ? `등록됨 · ${formatDate(saved.acquiredDate)}`
@@ -515,9 +698,14 @@ export default function FirstLogin() {
                 {acquiredList.map(({ certificateId, acquiredDate: date }) => (
                   <li key={certificateId} className="onboarding-tag">
                     <span>
-                      {certificateById[certificateId]?.displayName} · {formatDate(date)}
+                      {certificateById[certificateId]?.displayName} ·{" "}
+                      {formatDate(date)}
                     </span>
-                    <button type="button" onClick={() => handleAcquiredRemove(certificateId)} aria-label="취득 자격증 삭제">
+                    <button
+                      type="button"
+                      onClick={() => handleAcquiredRemove(certificateId)}
+                      aria-label="취득 자격증 삭제"
+                    >
                       ×
                     </button>
                   </li>
@@ -525,7 +713,10 @@ export default function FirstLogin() {
               </ul>
             )}
             {acquiredDialog && (
-              <div className="onboarding-modal-backdrop" onClick={handleAcquiredClose}>
+              <div
+                className="onboarding-modal-backdrop"
+                onClick={handleAcquiredClose}
+              >
                 <div
                   className="onboarding-modal"
                   role="dialog"
@@ -533,7 +724,10 @@ export default function FirstLogin() {
                   aria-labelledby="acquired-date-title"
                   onClick={(event) => event.stopPropagation()}
                 >
-                  <h2 id="acquired-date-title" className="onboarding-modal-title">
+                  <h2
+                    id="acquired-date-title"
+                    className="onboarding-modal-title"
+                  >
                     {certificateById[acquiredDialog.certificateId]?.displayName}
                   </h2>
                   <label className="onboarding-date">
@@ -545,18 +739,27 @@ export default function FirstLogin() {
                       autoFocus
                       onChange={(event) => {
                         const date = event.target.value;
-                        setAcquiredDialog((current) => (current ? { ...current, date } : current));
+                        setAcquiredDialog((current) =>
+                          current ? { ...current, date } : current,
+                        );
                         setAcquiredMessage("");
                       }}
                     />
                   </label>
                   {acquiredMessage && (
-                    <p className="onboarding-message is-error" aria-live="polite">
+                    <p
+                      className="onboarding-message is-error"
+                      aria-live="polite"
+                    >
                       {acquiredMessage}
                     </p>
                   )}
                   <div className="onboarding-modal-actions">
-                    <button type="button" className="onboarding-prev" onClick={handleAcquiredClose}>
+                    <button
+                      type="button"
+                      className="onboarding-prev"
+                      onClick={handleAcquiredClose}
+                    >
                       취소
                     </button>
                     <button
@@ -591,12 +794,18 @@ export default function FirstLogin() {
             <h1 id="onboarding-step-title" className="onboarding-title">
               관심 있는 자격증을 모두 선택해주세요.
             </h1>
-            <form className="onboarding-search-form" onSubmit={handleSearch} role="search">
+            <form
+              className="onboarding-search-form"
+              onSubmit={handleSearch}
+              role="search"
+            >
               <label className="onboarding-search">
                 <span className="onboarding-search-icon">
                   <SearchIcon />
                 </span>
-                <span className="interest-visually-hidden">관심 자격증명 검색</span>
+                <span className="interest-visually-hidden">
+                  관심 자격증명 검색
+                </span>
                 <input
                   type="text"
                   className="onboarding-search-input"
@@ -622,7 +831,11 @@ export default function FirstLogin() {
                 label="관심 자격증 분류"
               />
               {isSearching && (
-                <button type="button" className="onboarding-reset" onClick={handleSearchReset}>
+                <button
+                  type="button"
+                  className="onboarding-reset"
+                  onClick={handleSearchReset}
+                >
                   추천 목록 보기
                 </button>
               )}
@@ -632,21 +845,29 @@ export default function FirstLogin() {
             ) : (
               <ul className="onboarding-cards">
                 {listedCertificates.map((certificate) => {
-                  const isAdded = interestIds.includes(certificate.certificateId);
+                  const isAdded = interestIds.includes(
+                    certificate.certificateId,
+                  );
                   return (
                     <li key={certificate.certificateId}>
-                      <div className={`onboarding-cert${isAdded ? " is-selected" : ""}`}>
+                      <div
+                        className={`onboarding-cert${isAdded ? " is-selected" : ""}`}
+                      >
                         <label className="onboarding-cert-pick">
                           <input
                             type="checkbox"
                             className="onboarding-check"
                             checked={isAdded}
                             onChange={() =>
-                              isAdded ? handleRemove(certificate.certificateId) : handleAdd(certificate.certificateId)
+                              isAdded
+                                ? handleRemove(certificate.certificateId)
+                                : handleAdd(certificate.certificateId)
                             }
                           />
                           <span>
-                            <span className="onboarding-cert-name">{certificate.displayName}</span>
+                            <span className="onboarding-cert-name">
+                              {certificate.displayName}
+                            </span>
                             <span className="onboarding-cert-meta">
                               {CATEGORY_NAME_BY_ID[certificate.ncsCategoryId]}
                             </span>
@@ -669,7 +890,11 @@ export default function FirstLogin() {
                 {interestIds.map((certificateId) => (
                   <li key={certificateId} className="onboarding-tag">
                     <span>{certificateById[certificateId]?.displayName}</span>
-                    <button type="button" onClick={() => handleRemove(certificateId)} aria-label="관심 취소">
+                    <button
+                      type="button"
+                      onClick={() => handleRemove(certificateId)}
+                      aria-label="관심 취소"
+                    >
                       ×
                     </button>
                   </li>
@@ -692,27 +917,52 @@ export default function FirstLogin() {
 
         <div className={`onboarding-actions${step === 1 ? " is-end" : ""}`}>
           {step > 1 && (
-            <button type="button" className="onboarding-prev" onClick={() => moveStep(step - 1)} disabled={isMoving}>
+            <button
+              type="button"
+              className="onboarding-prev"
+              onClick={() => moveStep(step - 1)}
+              disabled={isMoving}
+            >
               이전
             </button>
           )}
           {step === 1 && (
-            <button type="button" className="onboarding-next" onClick={() => moveStep(2)} disabled={isMoving}>
+            <button
+              type="button"
+              className="onboarding-next"
+              onClick={() => moveStep(2)}
+              disabled={isMoving}
+            >
               다음
             </button>
           )}
           {step === 2 && (
-            <button type="button" className="onboarding-next" onClick={() => moveStep(3)} disabled={isMoving}>
+            <button
+              type="button"
+              className="onboarding-next"
+              onClick={() => moveStep(3)}
+              disabled={isMoving}
+            >
               다음
             </button>
           )}
           {step === 3 && (
-            <button type="button" className="onboarding-next" onClick={() => moveStep(4)} disabled={isMoving}>
+            <button
+              type="button"
+              className="onboarding-next"
+              onClick={() => moveStep(4)}
+              disabled={isMoving}
+            >
               다음
             </button>
           )}
           {step === 4 && (
-            <button type="button" className="onboarding-next" onClick={handleComplete} disabled={isCompleting}>
+            <button
+              type="button"
+              className="onboarding-next"
+              onClick={handleComplete}
+              disabled={isCompleting}
+            >
               완료
             </button>
           )}

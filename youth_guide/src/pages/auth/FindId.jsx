@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/FindId.css";
+import "../../styles/FindId.css";
 
 const EMAIL_FORMAT_ERROR = { text: "이메일 형식이 올바르지 않습니다.", tone: "error" };
 const EMAIL_UNREGISTERED = { text: "가입되지 않은 이메일입니다.", tone: "error" };
