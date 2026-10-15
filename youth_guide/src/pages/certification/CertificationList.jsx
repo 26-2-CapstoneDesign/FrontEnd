@@ -1,5 +1,5 @@
 import { Link, useSearchParams } from "react-router-dom";
-import { getExamList } from "../data/certifications";
+import { getExamList } from "../../data/certifications";
 import "../styles/CertificationList.css";
 
 const PAGE_SIZE = 6;

@@ -5,7 +5,7 @@ import {
   confirmEmailCode,
   sendEmailCode,
   signup,
-} from "../api/member";
+} from "../../api/member";
 
 import "../styles/SignUp.css";
 

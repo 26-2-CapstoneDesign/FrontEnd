@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/ReviewList.css";
-import { getReviews, seedDummyReviews } from "../utils/reviewStore.js";
+import { getReviews, seedDummyReviews } from "../../utils/reviewStore.js";
 
 const PAGE_SIZE = 10;
 const PAGE_GROUP_SIZE = 8;

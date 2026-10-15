@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { getCertification } from "../data/certifications";
+import { getCertification } from "../../data/certifications";
 import "../styles/CertificationDetail.css";
 
 const QNET_URL = "https://www.q-net.or.kr";
@@ -37,7 +37,10 @@ export default function CertificationDetail() {
         <h1 className="cert-detail-title">{cert.name}</h1>
       </header>
 
-      <section className="cert-detail-section" aria-labelledby="cert-info-title">
+      <section
+        className="cert-detail-section"
+        aria-labelledby="cert-info-title"
+      >
         <h2 id="cert-info-title" className="cert-detail-section-title">
           자격정보
         </h2>
@@ -57,7 +60,10 @@ export default function CertificationDetail() {
         </dl>
       </section>
 
-      <section className="cert-detail-section" aria-labelledby="cert-schedule-title">
+      <section
+        className="cert-detail-section"
+        aria-labelledby="cert-schedule-title"
+      >
         <h2 id="cert-schedule-title" className="cert-detail-section-title">
           시험일정
         </h2>
@@ -77,7 +83,12 @@ export default function CertificationDetail() {
         <button type="button" className="cert-detail-primary">
           관심 자격증으로 등록
         </button>
-        <a className="cert-detail-secondary" href={QNET_URL} target="_blank" rel="noopener noreferrer">
+        <a
+          className="cert-detail-secondary"
+          href={QNET_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           원서 접수하러가기 ↗
         </a>
       </div>
