@@ -17,9 +17,6 @@ const NICKNAME_MAX_LENGTH = 20;
 const BIRTH_YEAR_START = 2009;
 const BIRTH_YEAR_END = 1900;
 
-const GENDER_OPTIONS = ["여성", "남성", "비공개"];
-const GENDER_CODES = { 여성: "FEMALE", 남성: "MALE", 비공개: "UNDISCLOSED" };
-
 const TERMS = [
   { id: "service", label: "(필수) 이용약관 동의", isRequired: true },
   {
@@ -134,7 +131,6 @@ export default function SignUp() {
   const [verificationCode, setVerificationCode] = useState("");
   const [codeStatus, setCodeStatus] = useState("idle");
   const [name, setName] = useState("");
-  const [gender, setGender] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [birthMonth, setBirthMonth] = useState("");
   const [birthDay, setBirthDay] = useState("");
@@ -167,7 +163,6 @@ export default function SignUp() {
     isPasswordConfirmed &&
     codeStatus === "verified" &&
     name.trim() !== "" &&
-    gender !== "" &&
     birthYear !== "" &&
     birthMonth !== "" &&
     birthDay !== "" &&
@@ -306,7 +301,6 @@ export default function SignUp() {
         nickname: nickname.trim(),
         email: email.trim(),
         name: name.trim(),
-        gender: GENDER_CODES[gender],
         birthDate,
       });
       navigate("/signup/complete", { replace: true });
@@ -471,25 +465,6 @@ export default function SignUp() {
               onChange={(event) => setName(event.target.value)}
             />
           </div>
-
-          <fieldset className="signup-field signup-fieldset">
-            <legend className="signup-label">성별</legend>
-            <div className="signup-gender">
-              {GENDER_OPTIONS.map((option) => (
-                <label key={option} className="signup-gender-option">
-                  <input
-                    className="signup-gender-input"
-                    type="radio"
-                    name="gender"
-                    value={option}
-                    checked={gender === option}
-                    onChange={(event) => setGender(event.target.value)}
-                  />
-                  <span className="signup-gender-label">{option}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
 
           <fieldset className="signup-field signup-fieldset">
             <legend className="signup-label">생년월일</legend>
