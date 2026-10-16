@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import {
   completeOnboarding,
   loadOnboardingCatalogs,
@@ -11,8 +10,6 @@ import {
   saveInterestJobs,
 } from "../api/onboarding";
 import "../styles/FirstLogin.css";
-
-const SEARCH_MAX_LENGTH = 100;
 
 // 아래 mock 값은 화면 동작 확인용 가상 데이터이며 실제 NCS 분류나 자격증 데이터가 아니다.
 // 상태: Mock 데이터 사용. API가 연결되기 전까지 화면 확인용으로 유지한다.
@@ -53,17 +50,13 @@ const STEPS = [
   { id: 4, label: "관심 자격증" },
 ];
 
-const CERTIFICATE_BY_ID = Object.fromEntries(
-  MOCK_CERTIFICATES.map((certificate) => [certificate.certificateId, certificate]),
-);
-const CATEGORY_NAME_BY_ID = Object.fromEntries(
-  MOCK_NCS_CATEGORIES.map((category) => [category.ncsCategoryId, category.name]),
-);
-const MOCK_RECOMMENDED_CERTIFICATES = MOCK_RECOMMENDED_IDS.map((id) => CERTIFICATE_BY_ID[id]);
-
+const SEARCH_MAX_LENGTH = 100;
+const MIDDLE_PROMPT = "대분류를 선택하면 중분류가 표시됩니다.";
+const MIDDLE_EMPTY = "이 대분류에 표시할 중분류가 없습니다.";
+const MINOR_PROMPT = "중분류를 선택하면 소분류가 표시됩니다.";
+const MINOR_EMPTY = "이 중분류에 표시할 소분류가 없습니다.";
 const SEARCH_EMPTY = "검색어를 입력해 주세요.";
 const LIST_EMPTY = "조건에 맞는 자격증이 없습니다.";
-const JOB_EMPTY = "조건에 맞는 샘플 분류가 없습니다.";
 const JOB_SAMPLE_NOTE = "직무 분류 API가 없어 화면 확인용 샘플 분류만 표시합니다. 실제 직무 목록이 아닙니다.";
 const ACQUIRED_DATE_REQUIRED = "취득일을 입력해 주세요.";
 const ACQUIRED_DATE_FUTURE = "취득일은 오늘 이후 날짜로 입력할 수 없습니다.";
@@ -77,6 +70,14 @@ const getToday = () => {
 
 const formatDate = (value) => value.replaceAll("-", ".");
 
+const CERTIFICATE_BY_ID = Object.fromEntries(
+  MOCK_CERTIFICATES.map((certificate) => [certificate.certificateId, certificate]),
+);
+const CATEGORY_NAME_BY_ID = Object.fromEntries(
+  MOCK_NCS_CATEGORIES.map((category) => [category.ncsCategoryId, category.name]),
+);
+const MOCK_RECOMMENDED_CERTIFICATES = MOCK_RECOMMENDED_IDS.map((id) => CERTIFICATE_BY_ID[id]);
+
 const filterCertificates = (certificates, { query, category }) =>
   certificates.filter(
     (certificate) =>
@@ -88,6 +89,14 @@ const filterCertificates = (certificates, { query, category }) =>
 
 const toggleId = (ids, id) =>
   ids.includes(id) ? ids.filter((item) => item !== id) : [...ids, id];
+
+const majorCategories = (categories) =>
+  categories.filter((category) => !category.parentCategoryId);
+
+const childrenOf = (categories, parentId) => {
+  if (!parentId) return [];
+  return categories.filter((category) => category.parentCategoryId === parentId);
+};
 
 function SearchIcon() {
   return (
@@ -132,86 +141,119 @@ function CategoryFilters({ selectedCategory, onSelect, label }) {
   );
 }
 
-function JobStep({ title, selectedIds, onToggle, query, onQueryChange, categories, note }) {
-  const normalized = query.trim();
-  const rows = categories.filter(
-    (category) =>
-      !normalized ||
-      category.name.includes(normalized) ||
-      category.code.includes(normalized),
+function CertificateCard({ name, meta, selected, onAdd }) {
+  return (
+    <div className={`onboarding-cert-card${selected ? " is-selected" : ""}`}>
+      <span className="onboarding-cert-card-text">
+        <span className="onboarding-cert-card-name">{name}</span>
+        {meta ? <span className="onboarding-cert-card-meta">{meta}</span> : null}
+      </span>
+      <button
+        type="button"
+        className={`onboarding-add${selected ? " is-cancel" : ""}`}
+        onClick={onAdd}
+        aria-pressed={selected}
+      >
+        {selected ? "취소" : "추가"}
+      </button>
+    </div>
   );
+}
 
+function JobMinorList({ items, selectedIds, onToggle }) {
+  if (items.length === 0) return <p className="onboarding-empty">{MINOR_EMPTY}</p>;
+  return (
+    <ul className="onboarding-minors">
+      {items.map((category) => {
+        const isSelected = selectedIds.includes(category.ncsCategoryId);
+        return (
+          <li key={category.ncsCategoryId}>
+            <label className={`onboarding-minor${isSelected ? " is-selected" : ""}`}>
+              <input
+                type="checkbox"
+                className="onboarding-check"
+                checked={isSelected}
+                onChange={() => onToggle(category.ncsCategoryId)}
+                aria-label={`${category.name} 선택`}
+              />
+              <span>
+                <span className="onboarding-minor-name">{category.name}</span>
+                <span className="onboarding-minor-meta">{category.code} · {category.levelCode}</span>
+              </span>
+            </label>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function LevelButtons({ items, selectedId, onSelect, label }) {
+  return (
+    <div className="onboarding-majors" role="group" aria-label={label}>
+      {items.map((item) => {
+        const isActive = item.ncsCategoryId === selectedId;
+        return (
+          <button
+            key={item.ncsCategoryId}
+            type="button"
+            className={`onboarding-major${isActive ? " is-active" : ""}`}
+            aria-pressed={isActive}
+            onClick={() => onSelect(item.ncsCategoryId)}
+          >
+            {item.name}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function LevelBrowser({
+  title,
+  note,
+  majors,
+  middles,
+  minors,
+  selectedMajorId,
+  selectedMiddleId,
+  selectedMinorIds,
+  onSelectMajor,
+  onSelectMiddle,
+  onToggleMinor,
+}) {
   return (
     <div className="onboarding-panel">
       <h1 id="onboarding-step-title" className="onboarding-title">{title}</h1>
       {note ? <p className="onboarding-note">{note}</p> : null}
-      <label className="onboarding-search">
-        <span className="onboarding-search-icon">
-          <SearchIcon />
-        </span>
-        <span className="interest-visually-hidden">샘플 분류 검색</span>
-        <input
-          type="text"
-          className="onboarding-search-input"
-          value={query}
-          onChange={(event) => onQueryChange(event.target.value)}
-          placeholder="샘플 분류를 검색해보세요."
-          maxLength={SEARCH_MAX_LENGTH}
-        />
-      </label>
-      <p className="onboarding-count">총 {rows.length}개의 샘플 분류</p>
-      {rows.length === 0 ? (
-        <p className="onboarding-empty">{JOB_EMPTY}</p>
-      ) : (
-        <div className="onboarding-table-wrap">
-          <table className="onboarding-table">
-            <thead>
-              <tr>
-                <th scope="col">선택</th>
-                <th scope="col">분류</th>
-                <th scope="col">직무명</th>
-                <th scope="col">직무코드</th>
-                <th scope="col">수준</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((category) => {
-                const isSelected = selectedIds.includes(category.ncsCategoryId);
-                return (
-                  <tr
-                    key={category.ncsCategoryId}
-                    className="onboarding-job-row"
-                    onClick={(event) => {
-                      if (event.target.closest("input")) return;
-                      onToggle(category.ncsCategoryId);
-                    }}
-                  >
-                    <td>
-                      <input
-                        type="checkbox"
-                        className="onboarding-check"
-                        checked={isSelected}
-                        onChange={() => onToggle(category.ncsCategoryId)}
-                        onClick={(event) => event.stopPropagation()}
-                        onKeyDown={(event) => {
-                          if (event.key !== " " && event.key !== "Enter") return;
-                          event.preventDefault();
-                          onToggle(category.ncsCategoryId);
-                        }}
-                        aria-label={`${category.name} 선택`}
-                      />
-                    </td>
-                    <td>{category.parentCategoryId ? category.parentCategoryId : "샘플"}</td>
-                    <td>{category.name}</td>
-                    <td>{category.code}</td>
-                    <td>{category.levelCode}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <div className="onboarding-levels">
+        <section className="onboarding-level">
+          <h2 className="onboarding-level-title">대분류</h2>
+          {majors.length === 0 ? (
+            <p className="onboarding-empty">표시할 대분류가 없습니다.</p>
+          ) : (
+            <LevelButtons items={majors} selectedId={selectedMajorId} onSelect={onSelectMajor} label="대분류" />
+          )}
+        </section>
+        <section className="onboarding-level">
+          <h2 className="onboarding-level-title">중분류</h2>
+          {!selectedMajorId ? (
+            <p className="onboarding-empty">{MIDDLE_PROMPT}</p>
+          ) : middles.length === 0 ? (
+            <p className="onboarding-empty">{MIDDLE_EMPTY}</p>
+          ) : (
+            <LevelButtons items={middles} selectedId={selectedMiddleId} onSelect={onSelectMiddle} label="중분류" />
+          )}
+        </section>
+        <section className="onboarding-level">
+          <h2 className="onboarding-level-title">소분류</h2>
+          {!selectedMiddleId ? (
+            <p className="onboarding-empty">{MINOR_PROMPT}</p>
+          ) : (
+            <JobMinorList items={minors} selectedIds={selectedMinorIds} onToggle={onToggleMinor} />
+          )}
+        </section>
+      </div>
     </div>
   );
 }
@@ -220,8 +262,10 @@ export default function FirstLogin() {
   const [step, setStep] = useState(1);
   const [currentJobIds, setCurrentJobIds] = useState([]);
   const [interestJobIds, setInterestJobIds] = useState([]);
-  const [currentJobQuery, setCurrentJobQuery] = useState("");
-  const [interestJobQuery, setInterestJobQuery] = useState("");
+  const [currentJobMajorId, setCurrentJobMajorId] = useState(null);
+  const [currentJobMiddleId, setCurrentJobMiddleId] = useState(null);
+  const [interestJobMajorId, setInterestJobMajorId] = useState(null);
+  const [interestJobMiddleId, setInterestJobMiddleId] = useState(null);
   const [interestIds, setInterestIds] = useState(MOCK_INTEREST_IDS);
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState(null);
@@ -250,6 +294,11 @@ export default function FirstLogin() {
   const certificateById = Object.fromEntries(
     certificateSource.map((certificate) => [certificate.certificateId, certificate]),
   );
+  const majors = majorCategories(jobCategories);
+  const currentMiddles = childrenOf(jobCategories, currentJobMajorId);
+  const interestMiddles = childrenOf(jobCategories, interestJobMajorId);
+  const currentMinors = childrenOf(jobCategories, currentJobMiddleId);
+  const interestMinors = childrenOf(jobCategories, interestJobMiddleId);
   const acquiredResults = filterCertificates(certificateSource, {
     query: acquiredQuery.trim(),
     category: acquiredCategory,
@@ -289,12 +338,6 @@ export default function FirstLogin() {
     };
   }, []);
 
-  const isSearching = searchQuery !== null;
-  const listedCertificates = filterCertificates(
-    isSearching || catalogStatus === "READY" ? certificateSource : MOCK_RECOMMENDED_CERTIFICATES,
-    { query: searchQuery, category: selectedCategory },
-  );
-
   const handleRemove = (certificateId) => {
     setInterestIds((prev) => prev.filter((id) => id !== certificateId));
     setCompleteMessage("");
@@ -304,6 +347,12 @@ export default function FirstLogin() {
     setInterestIds((prev) => (prev.includes(certificateId) ? prev : [...prev, certificateId]));
     setCompleteMessage("");
   };
+
+  const isSearching = searchQuery !== null;
+  const listedCertificates = filterCertificates(
+    isSearching || catalogStatus === "READY" ? certificateSource : MOCK_RECOMMENDED_CERTIFICATES,
+    { query: searchQuery, category: selectedCategory },
+  );
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -446,14 +495,40 @@ export default function FirstLogin() {
         </ol>
 
         {step === 1 && (
-          <JobStep
+          <LevelBrowser
             title="현재 직무를 모두 선택해주세요."
-            selectedIds={currentJobIds}
-            onToggle={(id) => setCurrentJobIds((prev) => toggleId(prev, id))}
-            query={currentJobQuery}
-            onQueryChange={setCurrentJobQuery}
-            categories={jobCategories}
             note={jobNote}
+            majors={majors}
+            middles={currentMiddles}
+            minors={currentMinors}
+            selectedMajorId={currentJobMajorId}
+            selectedMiddleId={currentJobMiddleId}
+            selectedMinorIds={currentJobIds}
+            onSelectMajor={(id) => {
+              setCurrentJobMajorId(id);
+              if (id !== currentJobMajorId) setCurrentJobMiddleId(null);
+            }}
+            onSelectMiddle={setCurrentJobMiddleId}
+            onToggleMinor={(id) => setCurrentJobIds((prev) => toggleId(prev, id))}
+          />
+        )}
+
+        {step === 2 && (
+          <LevelBrowser
+            title="관심 있는 직무를 모두 선택해주세요."
+            note={jobNote}
+            majors={majors}
+            middles={interestMiddles}
+            minors={interestMinors}
+            selectedMajorId={interestJobMajorId}
+            selectedMiddleId={interestJobMiddleId}
+            selectedMinorIds={interestJobIds}
+            onSelectMajor={(id) => {
+              setInterestJobMajorId(id);
+              if (id !== interestJobMajorId) setInterestJobMiddleId(null);
+            }}
+            onSelectMiddle={setInterestJobMiddleId}
+            onToggleMinor={(id) => setInterestJobIds((prev) => toggleId(prev, id))}
           />
         )}
 
@@ -489,22 +564,16 @@ export default function FirstLogin() {
                   const saved = acquiredList.find((item) => item.certificateId === certificate.certificateId);
                   return (
                     <li key={certificate.certificateId}>
-                      <button
-                        type="button"
-                        className="onboarding-cert"
-                        onClick={() => handleAcquiredOpen(certificate.certificateId)}
-                      >
-                        <span
-                          className={`onboarding-cert-check${saved ? " is-checked" : ""}`}
-                          aria-hidden="true"
-                        />
-                        <span className="onboarding-cert-name">{certificate.displayName}</span>
-                        <span className="onboarding-cert-meta">
-                          {saved
-                            ? `등록됨 · ${formatDate(saved.acquiredDate)}`
-                            : CATEGORY_NAME_BY_ID[certificate.ncsCategoryId]}
-                        </span>
-                      </button>
+                      <CertificateCard
+                        name={certificate.displayName}
+                        meta={saved ? `등록됨 · ${formatDate(saved.acquiredDate)}` : CATEGORY_NAME_BY_ID[certificate.ncsCategoryId]}
+                        selected={Boolean(saved)}
+                        onAdd={() =>
+                          saved
+                            ? handleAcquiredRemove(certificate.certificateId)
+                            : handleAcquiredOpen(certificate.certificateId)
+                        }
+                      />
                     </li>
                   );
                 })}
@@ -574,18 +643,6 @@ export default function FirstLogin() {
           </div>
         )}
 
-        {step === 2 && (
-          <JobStep
-            title="관심 있는 직무를 모두 선택해주세요."
-            selectedIds={interestJobIds}
-            onToggle={(id) => setInterestJobIds((prev) => toggleId(prev, id))}
-            query={interestJobQuery}
-            onQueryChange={setInterestJobQuery}
-            categories={jobCategories}
-            note={jobNote}
-          />
-        )}
-
         {step === 4 && (
           <div className="onboarding-panel">
             <h1 id="onboarding-step-title" className="onboarding-title">
@@ -635,30 +692,14 @@ export default function FirstLogin() {
                   const isAdded = interestIds.includes(certificate.certificateId);
                   return (
                     <li key={certificate.certificateId}>
-                      <div className={`onboarding-cert${isAdded ? " is-selected" : ""}`}>
-                        <label className="onboarding-cert-pick">
-                          <input
-                            type="checkbox"
-                            className="onboarding-check"
-                            checked={isAdded}
-                            onChange={() =>
-                              isAdded ? handleRemove(certificate.certificateId) : handleAdd(certificate.certificateId)
-                            }
-                          />
-                          <span>
-                            <span className="onboarding-cert-name">{certificate.displayName}</span>
-                            <span className="onboarding-cert-meta">
-                              {CATEGORY_NAME_BY_ID[certificate.ncsCategoryId]}
-                            </span>
-                          </span>
-                        </label>
-                        <Link
-                          to={`/certifications/${certificate.certificateId}`}
-                          className="onboarding-detail"
-                        >
-                          상세보기
-                        </Link>
-                      </div>
+                      <CertificateCard
+                        name={certificate.displayName}
+                        meta={CATEGORY_NAME_BY_ID[certificate.ncsCategoryId]}
+                        selected={isAdded}
+                        onAdd={() =>
+                          isAdded ? handleRemove(certificate.certificateId) : handleAdd(certificate.certificateId)
+                        }
+                      />
                     </li>
                   );
                 })}

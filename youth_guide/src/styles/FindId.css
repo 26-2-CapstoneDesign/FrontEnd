@@ -11,11 +11,15 @@
   --find-id-error: #e03131;
   --find-id-info: #8a8f9c;
 
+  --find-id-pad-y: 64px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100svh - 72px);
-  padding: 64px 16px;
+  /* layout-main 세로 여백을 상쇄하고, 헤더를 뺀 높이만 채운다. */
+  margin-block: calc(var(--page-padding-y) * -1);
+  min-height: calc(100svh - var(--header-height));
+  padding: var(--find-id-pad-y) 16px;
   background: var(--find-id-page-bg);
   box-sizing: border-box;
   color-scheme: light;
@@ -32,7 +36,7 @@
   flex-direction: column;
   width: 100%;
   max-width: 400px;
-  min-height: 640px;
+  min-height: min(640px, calc(100svh - var(--header-height) - (var(--find-id-pad-y) * 2)));
   padding: 44px 28px 32px;
   background: #fff;
   border: 1px solid #eceef2;
@@ -224,7 +228,8 @@
 
 @media (max-width: 480px) {
   .find-id-page {
-    padding: 32px 12px;
+    --find-id-pad-y: 32px;
+    padding: var(--find-id-pad-y) 12px;
   }
 
   .find-id-card {

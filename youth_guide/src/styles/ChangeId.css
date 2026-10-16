@@ -14,8 +14,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Layout의 상단 메뉴와 main 여백(약 72px)을 뺀 높이만큼 배경을 채운다. */
-  min-height: calc(100svh - 72px);
+  /* layout-main 세로 여백을 상쇄하고, 헤더를 뺀 높이만 채운다. */
+  margin-block: calc(var(--page-padding-y) * -1);
+  min-height: calc(100svh - var(--header-height));
   padding: 80px 16px;
   background: var(--change-id-page-bg);
   box-sizing: border-box;
@@ -194,6 +195,13 @@
 .change-id-submit:disabled {
   background: #c5c8e8;
   cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .change-id-page {
+    /* 검색창이 두 번째 줄로 내려 헤더가 --header-height(72px)보다 큰 114px다. */
+    min-height: calc(100svh - 114px);
+  }
 }
 
 @media (max-width: 480px) {
