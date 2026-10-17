@@ -31,8 +31,12 @@ const renderContent = (content) => {
 };
 
 export default function ReviewDetail() {
-  const navigate = useNavigate();
   const { reviewId } = useParams();
+  return <ReviewDetailContent key={reviewId} reviewId={reviewId} />;
+}
+
+function ReviewDetailContent({ reviewId }) {
+  const navigate = useNavigate();
 
   const [currentUser] = useState(getCurrentUser);
   const [reported, setReported] = useState(() =>
@@ -49,6 +53,7 @@ export default function ReviewDetail() {
   const [replyText, setReplyText] = useState("");
   const [confirm, setConfirm] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [toast, setToast] = useState("");
 
   const viewed = useRef(false);
 
@@ -70,6 +75,12 @@ export default function ReviewDetail() {
       });
     }
   }, [comments]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(""), 2500);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   if (!review) {
     return (
@@ -119,9 +130,10 @@ export default function ReviewDetail() {
     setReportOpen(true);
   };
 
-  const handleReported = () => {
+  const handleReported = (message) => {
     setReported(true);
     setReportOpen(false);
+    setToast(message);
   };
 
   const newComment = (content, parentId) => ({
@@ -532,6 +544,13 @@ export default function ReviewDetail() {
                 onReported={handleReported}
             />
         )}
+
+        {toast && (
+            <div className="toast" role="status" aria-live="polite">
+              <span className="toast__icon" aria-hidden="true">✓</span>
+              {toast}
+            </div>
+        )}
       </div>
   );
 }
@@ -550,12 +569,10 @@ function ReportModal({ reviewId, userId, onClose, onReported }) {
     try {
       // TODO: 신고 API 호출 (POST /reviews/{reviewId}/reports, body: { type, detail })
       addReport(reviewId, userId, { type, detail });
-      alert("신고가 접수됐어요.");
-      onReported();
+      onReported("신고가 접수됐어요.");
     } catch (e) {
       if (e?.status === 409) {
-        alert("이미 신고한 글이에요.");
-        onReported();
+        onReported("이미 신고한 글이에요.");
       } else {
         setError("신고에 실패했어요. 잠시 후 다시 시도해주세요.");
       }
@@ -565,7 +582,7 @@ function ReportModal({ reviewId, userId, onClose, onReported }) {
   return (
       <div className="modal-overlay" onClick={onClose}>
         <div
-            className="modal"
+            className="modal report-modal"
             role="dialog"
             aria-modal="true"
             aria-labelledby="report-modal-title"
@@ -574,14 +591,15 @@ function ReportModal({ reviewId, userId, onClose, onReported }) {
           <p id="report-modal-title" className="modal__message">
             신고 사유를 선택해주세요
           </p>
+          <p className="report-modal__sub">해당하는 사유를 하나 골라주세요.</p>
 
           <div
               role="radiogroup"
               aria-labelledby="report-modal-title"
-              style={{ display: "flex", flexDirection: "column", gap: 8, margin: "12px 0" }}
+              className="report-options"
           >
             {REPORT_TYPES.map((t) => (
-                <label key={t.value} style={{ display: "flex", gap: 8, cursor: "pointer" }}>
+                <label key={t.value} className="report-option">
                   <input
                       type="radio"
                       name="report-type"
@@ -598,25 +616,28 @@ function ReportModal({ reviewId, userId, onClose, onReported }) {
           </div>
 
           {type === "ETC" && (
-              <textarea
-                  value={detail}
-                  onChange={(e) => {
-                    setDetail(e.target.value);
-                    setError("");
-                  }}
-                  maxLength={REPORT_DETAIL_MAX}
-                  placeholder="신고 사유를 입력해주세요."
-                  aria-label="기타 신고 사유"
-                  rows={3}
-                  style={{ width: "100%", boxSizing: "border-box", resize: "none" }}
-              />
+              <>
+                <textarea
+                    className="report-detail"
+                    value={detail}
+                    onChange={(e) => {
+                      setDetail(e.target.value);
+                      setError("");
+                    }}
+                    maxLength={REPORT_DETAIL_MAX}
+                    placeholder="신고 사유를 입력해주세요."
+                    aria-label="기타 신고 사유"
+                    rows={3}
+                />
+                <p className="report-detail__count">
+                  {detail.length}/{REPORT_DETAIL_MAX}
+                </p>
+              </>
           )}
 
-          <p style={{ fontSize: 12, color: "#999", margin: "8px 0 0" }}>
-            신고는 취소할 수 없어요.
-          </p>
+          <p className="report-notice">⚠ 신고는 취소할 수 없어요.</p>
           {error && (
-              <p role="alert" style={{ fontSize: 13, color: "#e5484d", margin: "6px 0 0" }}>
+              <p role="alert" className="report-error">
                 {error}
               </p>
           )}
